@@ -42,9 +42,31 @@ Everything else — general architecture, how to run the project, target-app beh
 
 **Dummy sensitive files to add** (Day 2): none needed yet for this repo — it already has 4 genuinely sensitive files with real architectural weight. Dummy files will supplement the other 3 repos, which are less naturally security-relevant, to ensure the corpus has sensitive material spread across all of them (avoids the RBAC test suite being dominated by one repo's files).
 
-## Repos 2–4 (Brain Tumor Segmentation, nextplay_kanban, RAG-chatbot)
+## Repo 2: nextplay_kanban
 
-To be classified once each is uploaded and read. Expect kanban to have the most natural candidates (RLS policies, auth/session handling) given its resume description; the other two will likely need 1-2 deliberately-added dummy sensitive files each (`config/secrets_template.py`, `internal/admin_notes.md`, or similar) to ensure every repo contributes at least one senior-only boundary.
+Audited: clean React/TypeScript frontend, no committed RLS SQL (policies live
+in the Supabase dashboard, not version-controlled) and no embedded
+credentials (`env.example` only has placeholders). Every real file here is
+`contractor`-visible — genuinely nothing sensitive in the actual app code.
+
+| Path | Scope | Why |
+|---|---|---|
+| `src/lib/supabase.ts`, `src/hooks/useBoard.ts` | `contractor` | Client setup + data-access hook layer. Relies entirely on Postgres RLS for scoping (no manual `user_id` filtering in queries) — this *is* the resume-worthy pattern, and it's not sensitive; understanding it doesn't help anyone bypass anything, since the enforcement isn't in this code at all. |
+| `src/App.tsx`, `src/components/*.tsx`, `src/types/index.ts` | `contractor` | Plain UI components and type defs. |
+| `env.example`, `package.json`, config files | `contractor` | No real secrets — placeholders only. |
+
+**Dummy sensitive files added** (this repo needed all of them — nothing natively sensitive existed):
+| Path | Scope | Why |
+|---|---|---|
+| `src/config/secrets_template.py` | `senior_engineer` | Fake service-role key, fake Stripe secret, fake admin override token. Represents "the file that documents which real secrets exist and where," which is exactly the class of thing that should never be retrievable by a contractor. |
+| `internal/admin_notes.md` | `senior_engineer` | Fictional known-issue note (RLS/guest-session cleanup gap) + admin override procedure. Represents internal reasoning not meant for external-facing consumption. |
+| `src/lib/admin/billingOverride.ts` | `senior_engineer` | Fictional admin-only module using a service-role client that bypasses RLS entirely. Represents the "payments/admin stub" pattern — a real enterprise app would have logic like this walled off. |
+
+All three are clearly marked as dummy/fictional inside the files themselves (in case they're ever seen outside this project's context) and use obviously-fake values (`FAKE_` prefixes) — never real credentials.
+
+## Repo 3–4 (Brain Tumor Segmentation, RAG-chatbot)
+
+To be classified once each is uploaded and read.
 
 ## Open question to revisit at Phase 4
 
