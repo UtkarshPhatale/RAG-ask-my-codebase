@@ -64,9 +64,47 @@ credentials (`env.example` only has placeholders). Every real file here is
 
 All three are clearly marked as dummy/fictional inside the files themselves (in case they're ever seen outside this project's context) and use obviously-fake values (`FAKE_` prefixes) — never real credentials.
 
-## Repo 3–4 (Brain Tumor Segmentation, RAG-chatbot)
+## Repo 3: Brain Tumor Segmentation (Master's thesis)
 
-To be classified once each is uploaded and read.
+Audited: a large research repo (~90 code/doc files once scoped down, see
+ingestion note below). Public BraTS dataset IDs only — no real patient PHI
+anywhere. No credentials or account info found in any script (including
+SLURM submission scripts, which use only generic paths and job params).
+Like kanban, this repo has nothing natively sensitive — dummy files were
+added, but flavored for a research context (compute allocation, data-use
+agreement) rather than a product context (secrets, billing), so the
+boundary still feels authentic to what this repo actually is.
+
+**Ingestion scoping decision:** this repo has ~350 files total, but the vast
+majority are generated experiment artifacts — per-run PNGs, CSVs, and JSONs
+under `results/`, `backups/`, `all_experiments/`, `individual_analysis/`,
+`thesis_figures/`, plus bulk data references (`data/patient_list.txt`,
+`data/splits/`). These add retrieval noise without adding "how does this
+codebase work" value (a vector search for "how does the loss function work"
+shouldn't compete against 50 near-duplicate `test_summary.json` files).
+**Only `scripts/` (all code), top-level docs (`README.md`,
+`COMPLETE_THESIS_SUMMARY.txt`, `EXPERIMENT_LOG.md`, `PROGRESS_TRACKER.md`),
+`data/data_verification_report.txt`, and `graphs/*.py`** (the plotting
+scripts, not their `.png` outputs) are ingested. This is a deliberate
+signal-to-noise tradeoff, documented here so it reads as an intentional
+engineering decision, not an oversight, if ever questioned.
+
+| Path | Scope | Why |
+|---|---|---|
+| `scripts/**/*.py`, `scripts/**/*.sh` | `contractor` | Model architecture, training, evaluation, loss functions, postprocessing — the actual engineering substance. No security/safety logic of any kind; this is research code over public data. |
+| `README.md`, `COMPLETE_THESIS_SUMMARY.txt`, `EXPERIMENT_LOG.md`, `PROGRESS_TRACKER.md` | `contractor` | Narrative documentation — genuinely useful for "why did you make this choice" questions. |
+| `data/data_verification_report.txt` | `contractor` | Data-quality methodology, not bulk data itself. |
+| `graphs/*.py` | `contractor` | Plotting/analysis scripts. |
+
+**Dummy sensitive files added:**
+| Path | Scope | Why |
+|---|---|---|
+| `internal/lab_notes.md` | `senior_engineer` | Fictional compute-allocation details + a fictional note about a deleted pilot dataset under a data-use agreement that restricts naming the collaborating institution. Represents the research-context equivalent of "internal reasoning not meant for external consumption." |
+| `scripts/advanced/cluster_secrets_template.py` | `senior_engineer` | Fake SLURM account ID, fake SSH passphrase, fake data-portal token. Represents "the file documenting real credentials," same pattern as kanban's `secrets_template.py` but flavored for an academic-compute context. |
+
+## Repo 4 (RAG-chatbot)
+
+To be classified once uploaded and read.
 
 ## Open question to revisit at Phase 4
 

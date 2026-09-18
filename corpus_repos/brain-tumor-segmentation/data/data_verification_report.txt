@@ -1,0 +1,7 @@
+BraTS-GLI Data Verification Report
+==================================================
+
+Total patients: 1350
+Complete patients: 1350
+Incomplete patients: 0
+
