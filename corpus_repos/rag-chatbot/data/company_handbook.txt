@@ -1,0 +1,16 @@
+Acme Corp Employee Handbook - 2025 Edition
+
+REMOTE WORK POLICY
+All full-time employees are eligible for remote work up to 3 days per week. Remote work requests must be approved by your direct manager at least 48 hours in advance. Employees working remotely are expected to be available during core hours (10am - 4pm local time) and must have a reliable internet connection. Remote work privileges may be adjusted based on team needs and individual performance.
+
+PAID TIME OFF
+Full-time employees receive 20 days of paid time off (PTO) per calendar year. PTO accrues at a rate of 1.67 days per month. Unused PTO may be carried over up to a maximum of 5 days into the following year. PTO requests should be submitted at least 2 weeks in advance for absences longer than 3 consecutive days. Employees in their first 90 days receive prorated PTO.
+
+EXPENSE REIMBURSEMENT
+Business expenses must be submitted within 30 days of the transaction through the ExpenseBot system. Meals during business travel are reimbursed up to $75 per day. Home office equipment purchases up to $500 per year are covered with manager approval. All expenses over $200 require receipt documentation. Reimbursements are processed within 10 business days.
+
+ENGINEERING ON-CALL POLICY
+Engineering team members participate in a rotating on-call schedule. Each on-call rotation lasts one week, from Monday 9am to the following Monday 9am. On-call engineers receive a $500 stipend per rotation. Response time SLA is 15 minutes for P0 incidents and 1 hour for P1 incidents. On-call engineers should not consume alcohol during their rotation and must have laptop access at all times.
+
+LEARNING AND DEVELOPMENT
+Each employee has an annual learning budget of $2,000 for courses, conferences, books, and certifications. Conference attendance requires manager approval at least 30 days in advance. Employees may use up to 4 hours per week of work time for professional development. Completed certifications that are relevant to your role qualify for a one-time $500 bonus.

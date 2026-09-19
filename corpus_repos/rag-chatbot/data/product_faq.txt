@@ -1,0 +1,19 @@
+Acme Corp Product FAQ
+
+WHAT IS ACMECLOUD?
+AcmeCloud is our flagship cloud storage and collaboration platform. It allows teams to store, share, and collaborate on files in real time. AcmeCloud supports all major file formats and integrates with popular tools like Slack, Jira, and Google Workspace.
+
+WHAT PLANS ARE AVAILABLE?
+AcmeCloud offers three pricing tiers. The Free plan includes 5GB of storage and up to 3 team members. The Pro plan costs $12 per user per month and includes 100GB of storage, version history, and priority support. The Enterprise plan includes unlimited storage, SSO integration, audit logs, and a dedicated account manager. Enterprise pricing is available upon request.
+
+HOW DOES FILE VERSIONING WORK?
+AcmeCloud Pro and Enterprise plans automatically save every version of a file for up to 90 days. Users can view, compare, and restore any previous version from the file history panel. Free plan users have access to the last 5 versions only. Version history does not count against your storage quota.
+
+WHAT ARE THE UPLOAD LIMITS?
+Free plan users can upload files up to 250MB each. Pro plan users can upload files up to 2GB each. Enterprise users can upload files up to 10GB each. There is no limit on the number of files uploaded. Large file uploads use chunked transfer for reliability.
+
+IS ACMECLOUD SECURE?
+AcmeCloud encrypts all data at rest using AES-256 and in transit using TLS 1.3. Enterprise customers can configure their own encryption keys (BYOK). AcmeCloud is SOC 2 Type II certified and GDPR compliant. Two-factor authentication is available on all plans and is required on Enterprise plans. Data is stored in regionally distributed data centers with 99.99% uptime SLA.
+
+HOW DO I CONTACT SUPPORT?
+Free plan users can access community forums and documentation. Pro plan users get email support with a 24-hour response time SLA. Enterprise users get dedicated Slack channel support with a 4-hour response time SLA and a named account manager. All users can report critical security issues to security@acmecorp.example.com.

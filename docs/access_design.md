@@ -102,9 +102,52 @@ engineering decision, not an oversight, if ever questioned.
 | `internal/lab_notes.md` | `senior_engineer` | Fictional compute-allocation details + a fictional note about a deleted pilot dataset under a data-use agreement that restricts naming the collaborating institution. Represents the research-context equivalent of "internal reasoning not meant for external consumption." |
 | `scripts/advanced/cluster_secrets_template.py` | `senior_engineer` | Fake SLURM account ID, fake SSH passphrase, fake data-portal token. Represents "the file documenting real credentials," same pattern as kanban's `secrets_template.py` but flavored for an academic-compute context. |
 
-## Repo 4 (RAG-chatbot)
+## Repo 4: RAG-chatbot
 
-To be classified once uploaded and read.
+Audited: small, clean repo (5 data files, 2 source files, 1 test file). Worth
+noting for your own awareness: `pipeline.py`'s comments (`PRE-BUILT (do not
+modify)`, `YOUR WORK GOES HERE`, numbered `TODO`s) strongly suggest this was
+built from a guided tutorial/exercise scaffold rather than designed fully
+from scratch — `ask_question` (retrieval → prompt → generation) is the part
+that's genuinely yours. Worth being ready to speak precisely to that
+distinction if it comes up, since "I implemented X against a provided
+scaffold" and "I designed X from nothing" are different claims.
+
+The `data/` files are two coherent fictional demo corpora — a marketing
+agency's public client-facing materials (`faq.txt`, `pricing.txt`,
+`services.txt`) and "Acme Corp"'s product FAQ (`product_faq.txt`) — plus
+`company_handbook.txt`, a fictional *internal* HR/policy document (remote
+work, PTO, expense reimbursement, on-call pay, L&D budget). All of it is
+clearly fictional/demo content, not real business data, but the handbook
+file is naturally the right shape for a `senior_engineer`-only boundary
+without needing an invented dummy file — it's already "internal HR content"
+by design, unlike the other four files which are public-facing.
+
+| Path | Scope | Why |
+|---|---|---|
+| `data/faq.txt`, `data/pricing.txt`, `data/services.txt` | `contractor` | Public-facing client materials for the marketing-agency persona — no reason to restrict. |
+| `data/product_faq.txt` | `contractor` | Public product FAQ for the Acme Corp persona — same reasoning. |
+| `data/company_handbook.txt` | `senior_engineer` | Internal HR/policy content (PTO accrual, on-call stipend amounts, expense limits). This is the one file in this repo's corpus that's naturally internal-only by its own content, not an invented boundary — a contractor asking the "customer-facing" chatbot shouldn't be able to retrieve internal comp/policy details. |
+| `src/knowledge_base.py`, `src/pipeline.py` | `contractor` | Ingestion + retrieval/generation pipeline code — no security logic, nothing sensitive. |
+| `tests/test_pipeline.py` | `contractor` | Test suite. |
+| `README.md`, `requirements.txt` | `contractor` | Standard project docs/deps. |
+
+**Dummy sensitive files:** none needed — `company_handbook.txt` already
+provides a natural, un-invented senior-only boundary for this repo.
+
+---
+
+## Corpus summary (all 4 repos classified)
+
+| Repo | Natural sensitive content? | Dummy files added |
+|---|---|---|
+| interface-ai-computer-use-project | Yes — 4 files (guardrails, escalation, login_session) | None needed |
+| nextplay_kanban | No — fully clean frontend | 3 (secrets_template.py, admin_notes.md, billingOverride.ts) |
+| brain-tumor-segmentation | No — public research data, no credentials | 2 (lab_notes.md, cluster_secrets_template.py) |
+| RAG-chatbot | Yes — company_handbook.txt is naturally internal | None needed |
+
+Design phase (Phase 0, Days 1-2 of the roadmap) is complete. Next: Supabase
+schema + pgvector + RLS policy design (Day 3).
 
 ## Open question to revisit at Phase 4
 
