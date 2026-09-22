@@ -1,9 +1,11 @@
 """
-Day 5: end-to-end ingestion for ONE repo (interface-ai-computer-use-project).
+Ingestion pipeline: chunk a repo -> embed each chunk locally with
+all-MiniLM-L6-v2 -> insert into `documents` + `chunks` in Supabase.
 
-Pipeline: walk repo files -> chunk (ingestion/chunking.py) -> embed each
-chunk locally with all-MiniLM-L6-v2 -> insert into `documents` + `chunks`
-in Supabase.
+Day 5 built and proved this end-to-end for one repo
+(interface-ai-computer-use-project). Day 6 generalizes it to run against
+any of the 4 corpus repos via a command-line argument, so the same code
+proves the pipeline isn't hardcoded to one repo's structure.
 
 Deliberately uses the SECRET key, not the publishable key: ingestion is a
 backend/admin operation that must write chunks of every scope (contractor
@@ -15,10 +17,13 @@ is used instead, so RLS applies. Mixing these up would be a real security
 bug, so it's called out explicitly here.
 
 Usage:
-  pip install sentence-transformers langchain-text-splitters supabase python-dotenv
-  python scripts/ingest_repo.py
+  python scripts/ingest_repo.py interface-ai-computer-use-project
+  python scripts/ingest_repo.py nextplay_kanban
+  python scripts/ingest_repo.py brain-tumor-segmentation
+  python scripts/ingest_repo.py rag-chatbot
 """
 
+import argparse
 import os
 import sys
 from pathlib import Path
@@ -35,31 +40,23 @@ load_dotenv()
 SUPABASE_URL = os.environ["SUPABASE_URL"]
 SUPABASE_SECRET_KEY = os.environ["SUPABASE_SECRET_KEY"]  # ingestion only -- see docstring
 
-REPO_NAME = "interface-ai-computer-use-project"
-REPO_DIR = Path(__file__).parent.parent / "corpus_repos" / REPO_NAME
+CORPUS_ROOT = Path(__file__).parent.parent / "corpus_repos"
 ACCESS_MAP_PATH = Path(__file__).parent.parent / "ingestion" / "access_map.json"
 
 
-def main():
-    print(f"Loading access map from {ACCESS_MAP_PATH}")
-    access_map = load_access_map(ACCESS_MAP_PATH)
-
-    print(f"Chunking {REPO_DIR} ...")
-    chunks = chunk_repo(REPO_DIR, REPO_NAME, access_map)
-    print(f"  -> {len(chunks)} chunks produced")
-
-    if not chunks:
-        print("No chunks produced -- check REPO_DIR path and try again.")
+def ingest(repo_name: str, client: Client, model: SentenceTransformer, access_map: dict):
+    repo_dir = CORPUS_ROOT / repo_name
+    if not repo_dir.is_dir():
+        print(f"  SKIP: {repo_dir} does not exist")
         return
 
-    print("Loading embedding model (all-MiniLM-L6-v2, first run downloads ~80MB) ...")
-    model = SentenceTransformer("all-MiniLM-L6-v2")
+    print(f"Chunking {repo_dir} ...")
+    chunks = chunk_repo(repo_dir, repo_name, access_map)
+    print(f"  -> {len(chunks)} chunks produced")
+    if not chunks:
+        print("  No chunks produced -- check the repo directory and try again.")
+        return
 
-    print("Connecting to Supabase with the secret key (ingestion bypasses RLS by design) ...")
-    client: Client = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
-
-    # Group chunks by (repo, path) so we create one `documents` row per
-    # file, then attach all of that file's chunks to it.
     by_path: dict[str, list] = {}
     for c in chunks:
         by_path.setdefault(c.path, []).append(c)
@@ -72,7 +69,7 @@ def main():
 
         doc_result = (
             client.table("documents")
-            .insert({"repo": REPO_NAME, "path": path, "required_scope": scope})
+            .insert({"repo": repo_name, "path": path, "required_scope": scope})
             .execute()
         )
         document_id = doc_result.data[0]["id"]
@@ -95,8 +92,33 @@ def main():
 
         print(f"  {path}  ({scope}, {len(rows)} chunk(s))")
 
-    print()
-    print(f"Done. Inserted {inserted_documents} documents, {inserted_chunks} chunks.")
+    print(f"  Done: {inserted_documents} documents, {inserted_chunks} chunks for {repo_name}\n")
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Ingest one corpus repo into Supabase.")
+    parser.add_argument(
+        "repo_name",
+        choices=[
+            "interface-ai-computer-use-project",
+            "nextplay_kanban",
+            "brain-tumor-segmentation",
+            "rag-chatbot",
+        ],
+        help="Which corpus_repos/<name> directory to ingest.",
+    )
+    args = parser.parse_args()
+
+    print(f"Loading access map from {ACCESS_MAP_PATH}")
+    access_map = load_access_map(ACCESS_MAP_PATH)
+
+    print("Loading embedding model (all-MiniLM-L6-v2, cached after first run) ...")
+    model = SentenceTransformer("all-MiniLM-L6-v2")
+
+    print("Connecting to Supabase with the secret key (ingestion bypasses RLS by design) ...\n")
+    client: Client = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
+
+    ingest(args.repo_name, client, model, access_map)
 
 
 if __name__ == "__main__":
