@@ -152,3 +152,32 @@ schema + pgvector + RLS policy design (Day 3).
 ## Open question to revisit at Phase 4
 
 If a contractor asks an *indirect* question that would only be answerable by combining a `contractor`-visible chunk with a `senior_engineer`-only chunk (e.g. "why does replay never auto-confirm irreversible actions?" — the fact is in `policy.py`, senior-only, but referenced indirectly in `replay/engine.py` comments), the retrieval layer should still only return contractor-visible chunks; the generation step may end up giving a vague or partial answer. This is expected and correct — documented explicitly in the README as the retrieval-guarantee vs. answer-completeness tradeoff.
+
+## Phase 0 verification — RLS enforcement proven (Day 4)
+
+Before any application code existed, the core RBAC claim of this project —
+"a chunk's `required_scope` is enforced by Postgres itself, not by
+application logic" — was verified directly against the database.
+
+**Method:** two real Supabase Auth users were created (`contractor-test@example.com`
+mapped to `contractor` in `user_roles`, `senior-test@example.com` mapped to
+`senior_engineer`), plus two seeded chunks — one `contractor`-scoped
+(`README.md`), one `senior_engineer`-scoped (`guardrails/policy.py`). A
+verification script (`scripts/verify_rls.py`) logged in as each user via
+Supabase Auth to obtain a real session JWT, then issued the identical query
+(`select * from chunks`) using each session's own credentials — deliberately
+using the publishable key, not the service_role key, so RLS policies were
+actually in effect (the SQL Editor's default connection bypasses RLS
+entirely and cannot be used for this test).
+
+**Result:**
+- Contractor session: 1 chunk returned (`README.md` only)
+- Senior session: 2 chunks returned (`README.md` + `guardrails/policy.py`)
+- The senior-only chunk never appeared in the contractor's result set
+
+This confirms the retrieval-layer guarantee this project is built around:
+restricted content is filtered by the database before it ever reaches
+application code, not hidden after the fact by a prompt or a UI check. This
+is the same class of proof the Phase 1 adversarial test suite will extend
+to the full corpus, with embeddings and real similarity search in place of
+the two hand-seeded rows used here.
