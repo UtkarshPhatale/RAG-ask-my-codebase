@@ -1,0 +1,37 @@
+{
+    "_comment": "Machine-readable mirror of docs/access_design.md. Every path in a repo defaults to that repo's 'default_scope'; anything listed under 'senior_engineer_overrides' is restricted instead. Keep this in sync by hand whenever access_design.md changes -- it is the source of truth in prose, this is the source of truth in code.",
+  
+    "interface-ai-computer-use-project": {
+      "default_scope": "contractor",
+      "senior_engineer_overrides": [
+        "guardrails/policy.py",
+        "escalation/models.py",
+        "escalation/resolve.py",
+        "login_session.py"
+      ]
+    },
+  
+    "nextplay_kanban": {
+      "default_scope": "contractor",
+      "senior_engineer_overrides": [
+        "src/config/secrets_template.py",
+        "internal/admin_notes.md",
+        "src/lib/admin/billingOverride.ts"
+      ]
+    },
+  
+    "brain-tumor-segmentation": {
+      "default_scope": "contractor",
+      "senior_engineer_overrides": [
+        "internal/lab_notes.md",
+        "scripts/advanced/cluster_secrets_template.py"
+      ]
+    },
+  
+    "rag-chatbot": {
+      "default_scope": "contractor",
+      "senior_engineer_overrides": [
+        "data/company_handbook.txt"
+      ]
+    }
+  }
