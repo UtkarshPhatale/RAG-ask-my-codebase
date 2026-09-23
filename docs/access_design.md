@@ -137,17 +137,22 @@ provides a natural, un-invented senior-only boundary for this repo.
 
 ---
 
-## Corpus summary (all 4 repos classified)
+## Corpus summary (all 4 repos classified and ingested)
 
-| Repo | Natural sensitive content? | Dummy files added |
-|---|---|---|
-| interface-ai-computer-use-project | Yes — 4 files (guardrails, escalation, login_session) | None needed |
-| nextplay_kanban | No — fully clean frontend | 3 (secrets_template.py, admin_notes.md, billingOverride.ts) |
-| brain-tumor-segmentation | No — public research data, no credentials | 2 (lab_notes.md, cluster_secrets_template.py) |
-| RAG-chatbot | Yes — company_handbook.txt is naturally internal | None needed |
+| Repo | Documents | Chunks | Senior-only files |
+|---|---|---|---|
+| interface-ai-computer-use-project | 32 | 597 | 4 (guardrails, escalation ×2, login_session) |
+| nextplay_kanban | 17 | 156 | 3 (secrets_template.py, admin_notes.md, billingOverride.ts) |
+| brain-tumor-segmentation | 96 | 1,884 | 2 (lab_notes.md, cluster_secrets_template.py) |
+| RAG-chatbot | 10 | 79 | 1 (company_handbook.txt) |
+| **Total** | **155** | **2,716** | **10 senior-only files** |
 
-Design phase (Phase 0, Days 1-2 of the roadmap) is complete. Next: Supabase
-schema + pgvector + RLS policy design (Day 3).
+Phase 0 (Days 1-7) is complete: all 4 repos audited, classified, and
+ingested; RLS enforcement proven at the database layer with real
+authenticated queries, first at small scale (Day 4) then verified
+per-file across the full corpus (Day 7, `scripts/verify_rls_detailed.py`)
+— zero leaks, zero over-restriction. Next: Phase 1, FastAPI retrieval
+endpoint + the adversarial test suite.
 
 ## Open question to revisit at Phase 4
 

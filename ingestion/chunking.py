@@ -52,6 +52,10 @@ SKIP_DIR_NAMES = {
     "dist", "build", ".pytest_cache",
 }
 
+SKIP_FILENAMES = {
+    "failed_patients.txt",
+}
+
 CHUNK_SIZE = 500
 CHUNK_OVERLAP = 50
 
