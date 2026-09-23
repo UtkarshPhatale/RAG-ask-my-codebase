@@ -123,6 +123,8 @@ def chunk_repo(repo_dir: Path, repo_name: str, access_map: dict) -> list[Chunk]:
         )
         if not ingestible:
             continue
+        if path.name in SKIP_FILENAMES:
+            continue
 
         relative_path = str(path.relative_to(repo_dir))
         scope = resolve_scope(repo_name, relative_path, access_map)
