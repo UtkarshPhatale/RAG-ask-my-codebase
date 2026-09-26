@@ -3,6 +3,7 @@ from fastapi import FastAPI, Depends
 from app.auth import get_current_user, AuthedUser
 from app.schemas import AskRequest, AskResponse
 from app.retrieval import retrieve_chunks
+from app.generation import generate_answer
 
 app = FastAPI(title="RAG-ask-my-codebase")
 
@@ -20,19 +21,19 @@ def me(user: AuthedUser = Depends(get_current_user)):
 @app.post("/ask", response_model=AskResponse)
 def ask(request: AskRequest, user: AuthedUser = Depends(get_current_user)):
     """
-    Day 3: real retrieval wired in. Chunks come back already scoped by RLS --
-    user.client carries this specific user's session, so match_chunks() (a
-    SECURITY INVOKER function) can only see rows Postgres decides this user
-    is allowed to see. No role check happens in this function's own code.
+    Full pipeline: authenticate -> retrieve (RLS-scoped) -> generate.
 
-    Generation (Day 4) still not wired -- answer stays None so today's
-    behavior isn't overstated.
+    generate_answer() receives ONLY chunks that already passed through RLS
+    for this specific user -- it has no scope awareness and doesn't need any,
+    since the security boundary was already enforced at the database layer
+    before this line ever runs.
     """
     chunks = retrieve_chunks(user.client, request.question)
+    answer = generate_answer(request.question, chunks)
 
     return AskResponse(
         question=request.question,
         role=user.role,
-        answer=None,
+        answer=answer,
         sources=[c["content"] for c in chunks],
     )
