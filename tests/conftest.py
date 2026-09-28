@@ -14,15 +14,16 @@ def _authed_client(email: str, password: str) -> Client:
     return client
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def contractor_client() -> Client:
-    """A Supabase client authenticated as the contractor test user.
-    Used exactly like a real contractor's client would be in production --
-    same publishable key, same JWT-based session, so RLS applies identically."""
+    """Session-scoped: logs in ONCE for the whole test run, not once per
+    test function. A JWT is valid for the session's duration regardless of
+    how many tests reuse it, and this is what cut runtime from ~4.5 minutes
+    down to a few seconds -- most of the original time was repeated
+    network round-trips to Supabase Auth, not the actual RLS checks."""
     return _authed_client(*CONTRACTOR_CREDS)
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def senior_client() -> Client:
-    """Same, but for the senior_engineer test user."""
     return _authed_client(*SENIOR_CREDS)
