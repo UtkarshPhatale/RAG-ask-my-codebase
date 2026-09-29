@@ -5,6 +5,8 @@ from app.config import SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY
 
 CONTRACTOR_CREDS = ("contractor-test@example.com", "TestPass123!")
 SENIOR_CREDS = ("senior-test@example.com", "TestPass456!")
+NOROLE_CREDS = ("norole-test@example.com", "TestPass789!")
+
 
 
 def _authed_client(email: str, password: str) -> Client:
@@ -27,3 +29,12 @@ def contractor_client() -> Client:
 @pytest.fixture(scope="session")
 def senior_client() -> Client:
     return _authed_client(*SENIOR_CREDS)
+
+
+@pytest.fixture(scope="session")
+def norole_client() -> Client:
+    """A Supabase client authenticated as a real user who has NEVER been
+    assigned a role in user_roles -- e.g. a fresh signup before role
+    assignment happens. Used to confirm get_current_user fails closed
+    (403) rather than defaulting to some implicit access level."""
+    return _authed_client(*NOROLE_CREDS)

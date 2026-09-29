@@ -70,13 +70,27 @@ def get_current_user(authorization: str = Header(...)) -> AuthedUser:
     user_client: Client = create_client(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
     user_client.postgrest.auth(token)
 
-    role_row = (
-        user_client.table("user_roles")
-        .select("role")
-        .eq("user_id", user_id)
-        .single()
-        .execute()
-    )
+    try:
+        role_row = (
+            user_client.table("user_roles")
+            .select("role")
+            .eq("user_id", user_id)
+            .single()
+            .execute()
+        )
+    except Exception:
+        # .single() raises (rather than returning empty data) when zero rows
+        # match -- e.g. a real, validly-authenticated user who exists in
+        # Supabase Auth but has never been assigned a role in user_roles.
+        # This must fail closed as 403, matching the "no role means no
+        # access" intent -- not surface as an unhandled 500. Caught broadly
+        # here because postgrest's exact exception type isn't part of its
+        # stable public API; failing closed on ANY lookup error here is the
+        # correct default for an access-control check.
+        raise HTTPException(
+            status_code=403,
+            detail="Authenticated user has no assigned role in user_roles",
+        )
 
     if not role_row.data:
         raise HTTPException(
