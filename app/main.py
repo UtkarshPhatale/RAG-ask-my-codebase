@@ -4,6 +4,7 @@ from app.auth import get_current_user, AuthedUser
 from app.schemas import AskRequest, AskResponse
 from app.retrieval import retrieve_chunks
 from app.generation import generate_answer
+from app.logging_utils import log_query
 
 app = FastAPI(title="RAG-ask-my-codebase")
 
@@ -20,16 +21,16 @@ def me(user: AuthedUser = Depends(get_current_user)):
 
 @app.post("/ask", response_model=AskResponse)
 def ask(request: AskRequest, user: AuthedUser = Depends(get_current_user)):
-    """
-    Full pipeline: authenticate -> retrieve (RLS-scoped) -> generate.
-
-    generate_answer() receives ONLY chunks that already passed through RLS
-    for this specific user -- it has no scope awareness and doesn't need any,
-    since the security boundary was already enforced at the database layer
-    before this line ever runs.
-    """
     chunks = retrieve_chunks(user.client, request.question)
     answer = generate_answer(request.question, chunks)
+
+    log_query(
+        user_id=user.user_id,
+        role=user.role,
+        question=request.question,
+        retrieved_chunk_ids=[c["id"] for c in chunks],
+        retrieved_scopes=[c["required_scope"] for c in chunks],
+    )
 
     return AskResponse(
         question=request.question,
