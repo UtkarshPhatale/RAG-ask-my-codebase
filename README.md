@@ -98,9 +98,55 @@ Covered:
 - A malformed/injection-style input to the retrieval RPC call, confirming
   Postgres's typed function signature rejects it at the type layer — there is
   no raw SQL string-building in this call path.
+- A user authenticated via Supabase Auth but with no row in `user_roles` at
+  all is rejected outright (403), rather than silently falling through to
+  either role's access.
+- A prompt-injection attempt embedded in the natural-language question itself
+  does not expand retrieval beyond the caller's own RLS-permitted scope — the
+  injection has no path to the database layer where enforcement happens.
 
 All tests pass against the live corpus (~155 documents, ~2,716 chunks across
 4 real repositories, 10 files marked senior-only).
+
+## What this project does and doesn't prove
+
+There's an important distinction between two different claims, worth stating
+explicitly rather than letting them blur together.
+
+**RLS enforcement is wording-independent.** A contractor cannot retrieve a
+senior-scoped chunk no matter how a question is phrased — the block happens
+at the database row level, checked against `required_scope` on every
+candidate row, after retrieval has already picked its candidates. It doesn't
+matter whether the query is vague, exact, or guesses the right file name;
+the enforcement doesn't look at wording at all.
+
+**Retrieval quality is a separate, wording-dependent property.** Whether a
+natural-language question successfully surfaces the *right* chunk in the
+first place depends on how well the embedding model (`all-MiniLM-L6-v2`, a
+small, free, local model) captures semantic similarity between a question
+and a chunk's content. During testing, a real example came up: a fictional
+lab-notes chunk about GPU allocation credentials didn't rank in the top 50
+results for any of three different natural-language paraphrases of its own
+content — despite the chunk being correctly embedded and ranking itself #1
+against its own exact embedding. That's a retrieval-precision limitation
+shared by every RAG system built on a small embedding model, not a defect
+in this project's access control.
+
+The adversarial test suite's senior-access tests were adjusted accordingly:
+rather than relying on a paraphrase closing an embedding-similarity gap that
+has nothing to do with security, tests that need to confirm "can this role
+retrieve this known chunk" use the chunk's own exact embedding directly,
+isolating the actual claim under test (RLS permits/denies correctly) from
+an unrelated one (does the embedding model rank paraphrases well).
+
+**A related, more fundamental limitation**, worth stating outright: this
+project's scope classifications (`docs/access_design.md`) were all made by
+hand, by someone who already knows the corpus intimately. The system
+enforces a given classification correctly and provably — it does not
+determine what the classification should be. Applying this to an unfamiliar
+codebase (a client's repo, an open-source project) is a genuinely harder,
+unsolved problem, deliberately deferred to Phase 4 of this project's roadmap
+rather than claimed as solved here.
 
 ## Stack, and why
 
