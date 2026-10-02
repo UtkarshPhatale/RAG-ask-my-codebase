@@ -200,3 +200,4 @@ fixtures** created for RBAC testing — clearly marked as such inside the files
 themselves. No real credentials or genuinely private information exist in
 this repository. Full classification reasoning for every file's scope is in
 `docs/access_design.md`.
+
