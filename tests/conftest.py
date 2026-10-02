@@ -38,3 +38,24 @@ def norole_client() -> Client:
     assignment happens. Used to confirm get_current_user fails closed
     (403) rather than defaulting to some implicit access level."""
     return _authed_client(*NOROLE_CREDS)
+
+
+def _get_token(email: str, password: str) -> str:
+    """Return the raw JWT access token for a real Supabase Auth user.
+
+    Separate from _authed_client: the HTTP-level tests need the literal
+    bearer string to put in an Authorization header, not a scoped client.
+    """
+    client = create_client(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
+    result = client.auth.sign_in_with_password({"email": email, "password": password})
+    return result.session.access_token
+
+
+@pytest.fixture(scope="session")
+def contractor_token() -> str:
+    return _get_token(*CONTRACTOR_CREDS)
+
+
+@pytest.fixture(scope="session")
+def senior_token() -> str:
+    return _get_token(*SENIOR_CREDS)
