@@ -29,7 +29,7 @@ Everything else — general architecture, how to run the project, target-app beh
 | `escalation/models.py` | `senior_engineer` | Human-takeover control-transfer protocol (`InterventionRequest`, status machine, control-handoff invariant). Sensitive because it describes exactly how/when automation cedes or reclaims control — a boundary condition worth protecting like the guardrails. |
 | `escalation/resolve.py` | `senior_engineer` | Directly operates on the escalation store (`resolve()` call path) — same sensitivity as `models.py`. |
 | `login_session.py` | `senior_engineer` | Explains and implements the specific mechanism for keeping credentials out of traces/artifacts. The *reasoning* here is exactly the kind of thing that shouldn't be casually browsable. |
-| `escalation/console.py` | `contractor` | Operator-facing console UI for reviewing/acting on interventions — no enforcement logic itself, just display/interaction. Revisit if a later read shows it embeds policy decisions. |
+| `escalation/console.py` | `contractor` | Operator-facing console UI for reviewing/acting on interventions — no enforcement logic itself, just display/interaction. **Open TODO, not yet rechecked:** this was flagged during initial classification for a follow-up read to confirm it doesn't embed policy decisions, and that follow-up never happened. Current classification stands as `contractor`, but should not be treated as a settled judgment until someone actually re-reads the file and either confirms it or reclassifies it. |
 | `agent/discovery.py` | `contractor` | Discovery/locator-fallback logic — core mechanics, not a security boundary. |
 | `artifact/schema.py`, `artifact/builder.py` | `contractor` | Capability artifact data model — structural, not sensitive. |
 | `replay/engine.py`, `replay/self_heal.py` | `contractor` | Replay mechanics, outcome classification, self-healing — core engineering, not access-control. |
@@ -154,9 +154,29 @@ per-file across the full corpus (Day 7, `scripts/verify_rls_detailed.py`)
 — zero leaks, zero over-restriction. Next: Phase 1, FastAPI retrieval
 endpoint + the adversarial test suite.
 
-## Open question to revisit at Phase 4
+## Known open items
 
-If a contractor asks an *indirect* question that would only be answerable by combining a `contractor`-visible chunk with a `senior_engineer`-only chunk (e.g. "why does replay never auto-confirm irreversible actions?" — the fact is in `policy.py`, senior-only, but referenced indirectly in `replay/engine.py` comments), the retrieval layer should still only return contractor-visible chunks; the generation step may end up giving a vague or partial answer. This is expected and correct — documented explicitly in the README as the retrieval-guarantee vs. answer-completeness tradeoff.
+**Unresolved classification recheck (`escalation/console.py`):** flagged
+during initial Repo 1 classification as needing a follow-up read to confirm
+it has no embedded policy decisions. That follow-up was never done. It
+remains classified `contractor` by default, but this is a genuine gap
+between "classified" and "verified" — tracked here explicitly rather than
+left as an easy-to-miss inline caveat, so it doesn't silently get treated as
+settled.
+
+**Indirect-query partial-context leakage (Phase 1 concern, not Phase 4):**
+if a contractor asks an *indirect* question that would only be fully
+answerable by combining a `contractor`-visible chunk with a
+`senior_engineer`-only chunk (e.g. "why does replay never auto-confirm
+irreversible actions?" — the fact is in `policy.py`, senior-only, but
+referenced indirectly in `replay/engine.py` comments), the retrieval layer
+still only returns contractor-visible chunks; the generation step may end up
+giving a vague or partial answer. This is expected and correct — it's the
+retrieval-guarantee vs. answer-completeness tradeoff documented in the
+README, not a security gap. (This is unrelated to the separate, harder
+Phase 4 question of generalizing scope classification to an unfamiliar
+codebase — the two were previously conflated under one heading in this doc;
+split apart here for clarity.)
 
 ## Phase 0 verification — RLS enforcement proven (Day 4)
 
