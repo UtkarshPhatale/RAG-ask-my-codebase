@@ -43,3 +43,28 @@ against the actual files. Changes:
   logs and artifacts.
 - q015: reworded; the file gives no budget size or grantor, only what happens
   when the budget is exceeded.
+
+## Set frozen (Phase 2, Day 2): 28 questions
+
+Composition: 20 direct, 5 indirect, 3 unanswerable. All 10 senior-only files
+have at least one question. Validated by `python -m scripts.validate_eval`,
+which checks the schema, that every expected (repo, path) exists in the live
+documents table, and that every key_phrase appears verbatim in its file.
+
+From here on, existing questions change only to fix labeling mistakes, and each
+fix is logged here. New questions go in a separate v2 file, never into this one.
+
+## Label corrections and known ambiguities (recorded before any retrieval was run)
+
+- q025: grep for loss-class definitions found two files, so both are expected:
+  scripts/advanced/advanced_losses.py and scripts/train_segmentation.py. The
+  key phrase comes only from advanced_losses.py, so a train_segmentation.py
+  chunk can count as a file-hit but not a phrase-hit.
+- q016: escalation/models.py also describes the resolve() hand-back in its
+  docstring. Only resolve.py is labeled; a models.py hit is a near-miss.
+- q018: internal/lab_notes.md also mentions the allocation credentials and may
+  compete with cluster_secrets_template.py (both senior-only).
+- attention_unet*.py has several near-duplicate variants, so no question
+  targets it; a file-level label there would be ambiguous.
+- q019-q021 (unanswerable): the only keyword hit in the repos was
+  nextplay_kanban/package-lock.json, which is not an ingested file type.
