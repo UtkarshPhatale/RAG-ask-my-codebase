@@ -1,0 +1,26 @@
+-- 007: drop the ivfflat index on chunks.embedding.
+--
+-- Found by the Phase 2 retrieval eval. The index was created in migration 003,
+-- before any data was ingested, so its 100 cluster centroids were trained on an
+-- empty table. With the default ivfflat.probes = 1, each query searches only the
+-- single nearest cluster, then RLS filters that small candidate set. Observed:
+-- match_count = 5, 50 and 200 all returned only 2-4 rows for real questions,
+-- and relevant chunks were never candidates (best similarity 0.04 for a
+-- question the corpus answers almost verbatim).
+--
+-- Security is unaffected: RLS filters after the index scan, so it could only
+-- remove rows, never expose them. This was a recall bug, not a leak.
+--
+-- Why drop rather than tune: the corpus is ~2.7k chunks, where an exact
+-- sequential scan takes milliseconds and has 100% recall. An approximate index
+-- adds a failure mode and buys nothing at this size.
+--
+-- If the corpus grows large, recreate an index AFTER loading data (prefer hnsw,
+-- which needs no training step), and re-run the eval before trusting it:
+--   create index chunks_embedding_idx on chunks
+--     using hnsw (embedding vector_cosine_ops);
+-- Exact rollback of this migration:
+--   create index chunks_embedding_idx on chunks
+--     using ivfflat (embedding vector_cosine_ops) with (lists = 100);
+
+drop index if exists chunks_embedding_idx;

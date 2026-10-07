@@ -1,0 +1,1566 @@
+{
+  "meta": {
+    "k": 5,
+    "n_questions": 28,
+    "run_at": "2026-10-07T06:22:53.975650+00:00"
+  },
+  "rows": [
+    {
+      "id": "q001",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "nextplay_kanban",
+      "files": [
+        "nextplay_kanban/src/hooks/useBoard.ts",
+        "nextplay_kanban/src/hooks/useBoard.ts",
+        "interface-ai-computer-use-project/artifact/schema.py",
+        "nextplay_kanban/src/components/TaskModal.tsx",
+        "rag-chatbot/README.md"
+      ],
+      "sims": [
+        0.365,
+        0.3534,
+        0.3079,
+        0.3025,
+        0.293
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "nextplay_kanban/src/hooks/useBoard.ts"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q001",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "nextplay_kanban",
+      "files": [
+        "nextplay_kanban/src/hooks/useBoard.ts",
+        "nextplay_kanban/src/hooks/useBoard.ts",
+        "interface-ai-computer-use-project/artifact/schema.py",
+        "nextplay_kanban/src/components/TaskModal.tsx",
+        "rag-chatbot/README.md"
+      ],
+      "sims": [
+        0.365,
+        0.3534,
+        0.3079,
+        0.3025,
+        0.293
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "nextplay_kanban/src/hooks/useBoard.ts"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q002",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "nextplay_kanban",
+      "files": [
+        "nextplay_kanban/src/lib/supabase.ts",
+        "nextplay_kanban/src/lib/supabase.ts",
+        "nextplay_kanban/src/lib/supabase.ts",
+        "nextplay_kanban/src/hooks/useBoard.ts",
+        "nextplay_kanban/src/lib/supabase.ts"
+      ],
+      "sims": [
+        0.6029,
+        0.4834,
+        0.4575,
+        0.406,
+        0.3924
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "nextplay_kanban/src/lib/supabase.ts"
+      ],
+      "hit": true,
+      "precision": 0.8,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q002",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "nextplay_kanban",
+      "files": [
+        "nextplay_kanban/src/lib/admin/billingOverride.ts",
+        "nextplay_kanban/src/lib/supabase.ts",
+        "nextplay_kanban/src/lib/admin/billingOverride.ts",
+        "nextplay_kanban/src/lib/supabase.ts",
+        "nextplay_kanban/src/lib/supabase.ts"
+      ],
+      "sims": [
+        0.7633,
+        0.6029,
+        0.4954,
+        0.4834,
+        0.4575
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "nextplay_kanban/src/lib/supabase.ts"
+      ],
+      "hit": true,
+      "precision": 0.6,
+      "recall": 1.0,
+      "mrr": 0.5,
+      "phrase_hit": true
+    },
+    {
+      "id": "q003",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/dashboard/report.py",
+        "interface-ai-computer-use-project/dashboard/report.py",
+        "interface-ai-computer-use-project/evidence/EVIDENCE_README.md",
+        "interface-ai-computer-use-project/REPORT.md"
+      ],
+      "sims": [
+        0.6919,
+        0.6017,
+        0.5899,
+        0.5885,
+        0.568
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/replay/engine.py"
+      ],
+      "hit": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "mrr": 0.0,
+      "phrase_hit": false
+    },
+    {
+      "id": "q003",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/dashboard/report.py",
+        "interface-ai-computer-use-project/dashboard/report.py",
+        "interface-ai-computer-use-project/evidence/EVIDENCE_README.md",
+        "interface-ai-computer-use-project/REPORT.md"
+      ],
+      "sims": [
+        0.6919,
+        0.6017,
+        0.5899,
+        0.5885,
+        0.568
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/replay/engine.py"
+      ],
+      "hit": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "mrr": 0.0,
+      "phrase_hit": false
+    },
+    {
+      "id": "q004",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/tests/build_sample_artifact.py",
+        "interface-ai-computer-use-project/artifact/schema.py",
+        "interface-ai-computer-use-project/artifact/schema.py",
+        "interface-ai-computer-use-project/tests/build_sample_artifact.py",
+        "interface-ai-computer-use-project/tests/test_artifact_builder.py"
+      ],
+      "sims": [
+        0.6987,
+        0.6832,
+        0.6278,
+        0.6088,
+        0.5638
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/artifact/schema.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 0.5,
+      "phrase_hit": true
+    },
+    {
+      "id": "q004",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/tests/build_sample_artifact.py",
+        "interface-ai-computer-use-project/artifact/schema.py",
+        "interface-ai-computer-use-project/artifact/schema.py",
+        "interface-ai-computer-use-project/tests/build_sample_artifact.py",
+        "interface-ai-computer-use-project/tests/test_artifact_builder.py"
+      ],
+      "sims": [
+        0.6987,
+        0.6832,
+        0.6278,
+        0.6088,
+        0.5638
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/artifact/schema.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 0.5,
+      "phrase_hit": true
+    },
+    {
+      "id": "q005",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/COMPLETE_THESIS_SUMMARY.txt",
+        "brain-tumor-segmentation/COMPLETE_THESIS_SUMMARY.txt",
+        "brain-tumor-segmentation/README.md",
+        "brain-tumor-segmentation/README.md",
+        "brain-tumor-segmentation/README.md"
+      ],
+      "sims": [
+        0.6566,
+        0.5555,
+        0.5346,
+        0.5117,
+        0.4985
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/EXPERIMENT_LOG.md",
+        "brain-tumor-segmentation/README.md"
+      ],
+      "hit": true,
+      "precision": 0.6,
+      "recall": 0.5,
+      "mrr": 0.3333333333333333,
+      "phrase_hit": false
+    },
+    {
+      "id": "q005",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/COMPLETE_THESIS_SUMMARY.txt",
+        "brain-tumor-segmentation/COMPLETE_THESIS_SUMMARY.txt",
+        "brain-tumor-segmentation/README.md",
+        "brain-tumor-segmentation/README.md",
+        "brain-tumor-segmentation/README.md"
+      ],
+      "sims": [
+        0.6566,
+        0.5555,
+        0.5346,
+        0.5117,
+        0.4985
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/EXPERIMENT_LOG.md",
+        "brain-tumor-segmentation/README.md"
+      ],
+      "hit": true,
+      "precision": 0.6,
+      "recall": 0.5,
+      "mrr": 0.3333333333333333,
+      "phrase_hit": false
+    },
+    {
+      "id": "q006",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/data/data_verification_report.txt",
+        "brain-tumor-segmentation/scripts/01_extract_brats_fresh.py",
+        "brain-tumor-segmentation/scripts/01_extract_brats_fresh.py",
+        "brain-tumor-segmentation/PROGRESS_TRACKER.md",
+        "brain-tumor-segmentation/scripts/test_data_loading.py"
+      ],
+      "sims": [
+        0.5484,
+        0.5113,
+        0.453,
+        0.4522,
+        0.4406
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/data/data_verification_report.txt"
+      ],
+      "hit": true,
+      "precision": 0.2,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q006",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/data/data_verification_report.txt",
+        "brain-tumor-segmentation/scripts/01_extract_brats_fresh.py",
+        "brain-tumor-segmentation/scripts/01_extract_brats_fresh.py",
+        "brain-tumor-segmentation/PROGRESS_TRACKER.md",
+        "brain-tumor-segmentation/internal/lab_notes.md"
+      ],
+      "sims": [
+        0.5484,
+        0.5113,
+        0.453,
+        0.4522,
+        0.4447
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/data/data_verification_report.txt"
+      ],
+      "hit": true,
+      "precision": 0.2,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q007",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/pricing.txt"
+      ],
+      "sims": [
+        0.6059,
+        0.5811,
+        0.5495,
+        0.5255,
+        0.4951
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "rag-chatbot/data/pricing.txt"
+      ],
+      "hit": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q007",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/pricing.txt"
+      ],
+      "sims": [
+        0.6059,
+        0.5811,
+        0.5495,
+        0.5255,
+        0.4951
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "rag-chatbot/data/pricing.txt"
+      ],
+      "hit": true,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q008",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/src/pipeline.py",
+        "rag-chatbot/src/pipeline.py",
+        "rag-chatbot/src/pipeline.py",
+        "rag-chatbot/src/pipeline.py",
+        "interface-ai-computer-use-project/artifact/builder.py"
+      ],
+      "sims": [
+        0.5264,
+        0.5145,
+        0.4871,
+        0.4429,
+        0.4328
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "rag-chatbot/src/pipeline.py"
+      ],
+      "hit": true,
+      "precision": 0.8,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": false
+    },
+    {
+      "id": "q008",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/src/pipeline.py",
+        "rag-chatbot/src/pipeline.py",
+        "rag-chatbot/src/pipeline.py",
+        "rag-chatbot/src/pipeline.py",
+        "interface-ai-computer-use-project/artifact/builder.py"
+      ],
+      "sims": [
+        0.5264,
+        0.5145,
+        0.4871,
+        0.4429,
+        0.4328
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "rag-chatbot/src/pipeline.py"
+      ],
+      "hit": true,
+      "precision": 0.8,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": false
+    },
+    {
+      "id": "q009",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/data/services.txt",
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/services.txt",
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "rag-chatbot/data/pricing.txt"
+      ],
+      "sims": [
+        0.4061,
+        0.3511,
+        0.3495,
+        0.3336,
+        0.3191
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q009",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/data/company_handbook.txt",
+        "rag-chatbot/data/company_handbook.txt",
+        "rag-chatbot/data/services.txt",
+        "rag-chatbot/data/pricing.txt",
+        "rag-chatbot/data/services.txt"
+      ],
+      "sims": [
+        0.5402,
+        0.4927,
+        0.4061,
+        0.3511,
+        0.3495
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "rag-chatbot/data/company_handbook.txt"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q010",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/agent/discovery.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/REPORT.md"
+      ],
+      "sims": [
+        0.4634,
+        0.4445,
+        0.4443,
+        0.4155,
+        0.3913
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q010",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/guardrails/policy.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/agent/discovery.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/guardrails/policy.py"
+      ],
+      "sims": [
+        0.4993,
+        0.4634,
+        0.4445,
+        0.4443,
+        0.4384
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/guardrails/policy.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": false
+    },
+    {
+      "id": "q011",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/README.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/evidence/logger.py",
+        "interface-ai-computer-use-project/README.md"
+      ],
+      "sims": [
+        0.532,
+        0.4393,
+        0.429,
+        0.3762,
+        0.3673
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q011",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/login_session.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "nextplay_kanban/src/config/secrets_template.py",
+        "interface-ai-computer-use-project/README.md",
+        "interface-ai-computer-use-project/REPORT.md"
+      ],
+      "sims": [
+        0.5535,
+        0.532,
+        0.4675,
+        0.4393,
+        0.429
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/guardrails/policy.py",
+        "interface-ai-computer-use-project/login_session.py"
+      ],
+      "hit": true,
+      "precision": 0.2,
+      "recall": 0.5,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q012",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/replay/self_heal.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/REPORT.md"
+      ],
+      "sims": [
+        0.5327,
+        0.4661,
+        0.4191,
+        0.4143,
+        0.3817
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q012",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/escalation/models.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/replay/self_heal.py",
+        "interface-ai-computer-use-project/REPORT.md"
+      ],
+      "sims": [
+        0.6919,
+        0.5327,
+        0.4661,
+        0.4191,
+        0.4143
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/escalation/models.py"
+      ],
+      "hit": true,
+      "precision": 0.2,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": false
+    },
+    {
+      "id": "q013",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "nextplay_kanban",
+      "files": [
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "nextplay_kanban/src/lib/supabase.ts",
+        "nextplay_kanban/src/hooks/useBoard.ts",
+        "interface-ai-computer-use-project/dashboard/reliability.py"
+      ],
+      "sims": [
+        0.3752,
+        0.362,
+        0.3524,
+        0.3515,
+        0.3445
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q013",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "nextplay_kanban",
+      "files": [
+        "nextplay_kanban/internal/admin_notes.md",
+        "nextplay_kanban/internal/admin_notes.md",
+        "nextplay_kanban/internal/admin_notes.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/FINDINGS.md"
+      ],
+      "sims": [
+        0.6182,
+        0.4499,
+        0.3851,
+        0.3752,
+        0.362
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "nextplay_kanban/internal/admin_notes.md"
+      ],
+      "hit": true,
+      "precision": 0.6,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q014",
+      "role": "contractor",
+      "category": "indirect",
+      "repo": "nextplay_kanban",
+      "files": [
+        "rag-chatbot/data/pricing.txt",
+        "interface-ai-computer-use-project/target_app/server.py",
+        "rag-chatbot/data/pricing.txt",
+        "brain-tumor-segmentation/scripts/augmentation.py",
+        "rag-chatbot/data/product_faq.txt"
+      ],
+      "sims": [
+        0.2564,
+        0.2319,
+        0.2254,
+        0.2077,
+        0.2063
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q014",
+      "role": "senior_engineer",
+      "category": "indirect",
+      "repo": "nextplay_kanban",
+      "files": [
+        "nextplay_kanban/src/lib/admin/billingOverride.ts",
+        "nextplay_kanban/src/lib/admin/billingOverride.ts",
+        "nextplay_kanban/internal/admin_notes.md",
+        "rag-chatbot/data/pricing.txt",
+        "interface-ai-computer-use-project/target_app/server.py"
+      ],
+      "sims": [
+        0.423,
+        0.42,
+        0.2672,
+        0.2564,
+        0.2319
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "nextplay_kanban/src/lib/admin/billingOverride.ts"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q015",
+      "role": "contractor",
+      "category": "indirect",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "rag-chatbot/data/product_faq.txt",
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "interface-ai-computer-use-project/README.md"
+      ],
+      "sims": [
+        0.3931,
+        0.3701,
+        0.3135,
+        0.3061,
+        0.2999
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q015",
+      "role": "senior_engineer",
+      "category": "indirect",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/internal/lab_notes.md",
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "rag-chatbot/data/product_faq.txt",
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py"
+      ],
+      "sims": [
+        0.4891,
+        0.3931,
+        0.3701,
+        0.3135,
+        0.3061
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/internal/lab_notes.md"
+      ],
+      "hit": true,
+      "precision": 0.2,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q016",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/README.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/escalation/console.py"
+      ],
+      "sims": [
+        0.4613,
+        0.4552,
+        0.4516,
+        0.4203,
+        0.4186
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q016",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/escalation/models.py",
+        "interface-ai-computer-use-project/escalation/models.py",
+        "interface-ai-computer-use-project/README.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/REPORT.md"
+      ],
+      "sims": [
+        0.5512,
+        0.4946,
+        0.4613,
+        0.4552,
+        0.4516
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/escalation/resolve.py"
+      ],
+      "hit": false,
+      "precision": 0.0,
+      "recall": 0.0,
+      "mrr": 0.0,
+      "phrase_hit": false
+    },
+    {
+      "id": "q017",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "nextplay_kanban",
+      "files": [
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/artifact/schema.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/agent/discovery.py",
+        "interface-ai-computer-use-project/agent/discovery.py"
+      ],
+      "sims": [
+        0.3271,
+        0.3214,
+        0.3179,
+        0.313,
+        0.2927
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q017",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "nextplay_kanban",
+      "files": [
+        "nextplay_kanban/src/config/secrets_template.py",
+        "nextplay_kanban/src/lib/admin/billingOverride.ts",
+        "nextplay_kanban/src/config/secrets_template.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/artifact/schema.py"
+      ],
+      "sims": [
+        0.4928,
+        0.36,
+        0.3319,
+        0.3271,
+        0.3214
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "nextplay_kanban/src/config/secrets_template.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q018",
+      "role": "contractor",
+      "category": "indirect",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/README.md",
+        "brain-tumor-segmentation/README.md",
+        "brain-tumor-segmentation/scripts/advanced/eval_tta.py",
+        "brain-tumor-segmentation/scripts/train_segmentation.py",
+        "brain-tumor-segmentation/scripts/train_improved_v1.py"
+      ],
+      "sims": [
+        0.3532,
+        0.3233,
+        0.3012,
+        0.2888,
+        0.2872
+      ],
+      "leaks": [],
+      "kind": "restricted"
+    },
+    {
+      "id": "q018",
+      "role": "senior_engineer",
+      "category": "indirect",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/internal/lab_notes.md",
+        "brain-tumor-segmentation/scripts/advanced/cluster_secrets_template.py",
+        "brain-tumor-segmentation/README.md",
+        "brain-tumor-segmentation/scripts/advanced/cluster_secrets_template.py",
+        "brain-tumor-segmentation/README.md"
+      ],
+      "sims": [
+        0.4165,
+        0.4114,
+        0.3532,
+        0.3305,
+        0.3233
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/scripts/advanced/cluster_secrets_template.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 0.5,
+      "phrase_hit": true
+    },
+    {
+      "id": "q019",
+      "role": "contractor",
+      "category": "unanswerable",
+      "repo": "(none)",
+      "files": [
+        "brain-tumor-segmentation/scripts/advanced/train_48ch.py",
+        "brain-tumor-segmentation/scripts/advanced/train_48ch.py",
+        "brain-tumor-segmentation/scripts/advanced/train_48ch.py",
+        "brain-tumor-segmentation/scripts/advanced/train_48ch.py",
+        "brain-tumor-segmentation/scripts/advanced/train_augmented.py"
+      ],
+      "sims": [
+        0.3037,
+        0.276,
+        0.2752,
+        0.2738,
+        0.2734
+      ],
+      "leaks": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q019",
+      "role": "senior_engineer",
+      "category": "unanswerable",
+      "repo": "(none)",
+      "files": [
+        "brain-tumor-segmentation/scripts/advanced/train_48ch.py",
+        "brain-tumor-segmentation/scripts/advanced/train_48ch.py",
+        "brain-tumor-segmentation/scripts/advanced/train_48ch.py",
+        "brain-tumor-segmentation/scripts/advanced/train_48ch.py",
+        "brain-tumor-segmentation/scripts/advanced/train_augmented.py"
+      ],
+      "sims": [
+        0.3037,
+        0.276,
+        0.2752,
+        0.2738,
+        0.2734
+      ],
+      "leaks": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q020",
+      "role": "contractor",
+      "category": "unanswerable",
+      "repo": "(none)",
+      "files": [
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "rag-chatbot/data/faq.txt",
+        "interface-ai-computer-use-project/dashboard/aggregator.py",
+        "rag-chatbot/README.md"
+      ],
+      "sims": [
+        0.3707,
+        0.3701,
+        0.3062,
+        0.3017,
+        0.2992
+      ],
+      "leaks": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q020",
+      "role": "senior_engineer",
+      "category": "unanswerable",
+      "repo": "(none)",
+      "files": [
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "rag-chatbot/data/faq.txt",
+        "interface-ai-computer-use-project/dashboard/aggregator.py",
+        "rag-chatbot/README.md"
+      ],
+      "sims": [
+        0.3707,
+        0.3701,
+        0.3062,
+        0.3017,
+        0.2992
+      ],
+      "leaks": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q021",
+      "role": "contractor",
+      "category": "unanswerable",
+      "repo": "(none)",
+      "files": [
+        "interface-ai-computer-use-project/dashboard/report.py",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/artifact/builder.py"
+      ],
+      "sims": [
+        0.2075,
+        0.202,
+        0.2001,
+        0.1984,
+        0.1836
+      ],
+      "leaks": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q021",
+      "role": "senior_engineer",
+      "category": "unanswerable",
+      "repo": "(none)",
+      "files": [
+        "interface-ai-computer-use-project/escalation/models.py",
+        "interface-ai-computer-use-project/dashboard/report.py",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/REPORT.md"
+      ],
+      "sims": [
+        0.2536,
+        0.2075,
+        0.202,
+        0.2001,
+        0.1984
+      ],
+      "leaks": [],
+      "kind": "unanswerable"
+    },
+    {
+      "id": "q022",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/replay/self_heal.py",
+        "interface-ai-computer-use-project/replay/self_heal.py",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/FINDINGS.md"
+      ],
+      "sims": [
+        0.6953,
+        0.6228,
+        0.6092,
+        0.5637,
+        0.5455
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/replay/self_heal.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q022",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/replay/self_heal.py",
+        "interface-ai-computer-use-project/replay/self_heal.py",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/FINDINGS.md"
+      ],
+      "sims": [
+        0.6953,
+        0.6228,
+        0.6092,
+        0.5637,
+        0.5455
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/replay/self_heal.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q023",
+      "role": "contractor",
+      "category": "indirect",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/agent/discovery.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/replay/engine.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/replay/self_heal.py"
+      ],
+      "sims": [
+        0.4352,
+        0.4251,
+        0.4084,
+        0.4066,
+        0.3793
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/agent/discovery.py"
+      ],
+      "hit": true,
+      "precision": 0.2,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": false
+    },
+    {
+      "id": "q023",
+      "role": "senior_engineer",
+      "category": "indirect",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/agent/discovery.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/replay/engine.py",
+        "interface-ai-computer-use-project/REPORT.md",
+        "interface-ai-computer-use-project/replay/self_heal.py"
+      ],
+      "sims": [
+        0.4352,
+        0.4251,
+        0.4084,
+        0.4066,
+        0.3793
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/agent/discovery.py"
+      ],
+      "hit": true,
+      "precision": 0.2,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": false
+    },
+    {
+      "id": "q024",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "interface-ai-computer-use-project/README.md"
+      ],
+      "sims": [
+        0.7427,
+        0.6244,
+        0.6124,
+        0.602,
+        0.5702
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q024",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "interface-ai-computer-use-project",
+      "files": [
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/FINDINGS.md",
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py",
+        "interface-ai-computer-use-project/README.md"
+      ],
+      "sims": [
+        0.7427,
+        0.6244,
+        0.6124,
+        0.602,
+        0.5702
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "interface-ai-computer-use-project/dashboard/cost_estimate.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q025",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/scripts/unet_model.py",
+        "brain-tumor-segmentation/scripts/advanced/advanced_losses.py",
+        "brain-tumor-segmentation/README.md",
+        "brain-tumor-segmentation/COMPLETE_THESIS_SUMMARY.txt",
+        "brain-tumor-segmentation/README.md"
+      ],
+      "sims": [
+        0.5808,
+        0.5743,
+        0.5525,
+        0.5454,
+        0.5451
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/scripts/advanced/advanced_losses.py",
+        "brain-tumor-segmentation/scripts/train_segmentation.py"
+      ],
+      "hit": true,
+      "precision": 0.2,
+      "recall": 0.5,
+      "mrr": 0.5,
+      "phrase_hit": true
+    },
+    {
+      "id": "q025",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/scripts/unet_model.py",
+        "brain-tumor-segmentation/scripts/advanced/advanced_losses.py",
+        "brain-tumor-segmentation/README.md",
+        "brain-tumor-segmentation/COMPLETE_THESIS_SUMMARY.txt",
+        "brain-tumor-segmentation/README.md"
+      ],
+      "sims": [
+        0.5808,
+        0.5743,
+        0.5525,
+        0.5454,
+        0.5451
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/scripts/advanced/advanced_losses.py",
+        "brain-tumor-segmentation/scripts/train_segmentation.py"
+      ],
+      "hit": true,
+      "precision": 0.2,
+      "recall": 0.5,
+      "mrr": 0.5,
+      "phrase_hit": true
+    },
+    {
+      "id": "q026",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/scripts/advanced/analyze_intensity_distributions.py",
+        "brain-tumor-segmentation/EXPERIMENT_LOG.md",
+        "brain-tumor-segmentation/scripts/advanced/create_dataset_percentile.py",
+        "brain-tumor-segmentation/scripts/advanced/analyze_intensity_distributions.py",
+        "interface-ai-computer-use-project/dashboard/reliability.py"
+      ],
+      "sims": [
+        0.6341,
+        0.5303,
+        0.483,
+        0.445,
+        0.4388
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/scripts/advanced/analyze_intensity_distributions.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q026",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "brain-tumor-segmentation",
+      "files": [
+        "brain-tumor-segmentation/scripts/advanced/analyze_intensity_distributions.py",
+        "brain-tumor-segmentation/EXPERIMENT_LOG.md",
+        "brain-tumor-segmentation/scripts/advanced/create_dataset_percentile.py",
+        "brain-tumor-segmentation/scripts/advanced/analyze_intensity_distributions.py",
+        "interface-ai-computer-use-project/dashboard/reliability.py"
+      ],
+      "sims": [
+        0.6341,
+        0.5303,
+        0.483,
+        0.445,
+        0.4388
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "brain-tumor-segmentation/scripts/advanced/analyze_intensity_distributions.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q027",
+      "role": "contractor",
+      "category": "direct",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/README.md",
+        "rag-chatbot/README.md",
+        "rag-chatbot/README.md",
+        "rag-chatbot/src/knowledge_base.py",
+        "rag-chatbot/src/knowledge_base.py"
+      ],
+      "sims": [
+        0.5616,
+        0.5529,
+        0.5137,
+        0.4845,
+        0.4551
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "rag-chatbot/src/knowledge_base.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 0.25,
+      "phrase_hit": true
+    },
+    {
+      "id": "q027",
+      "role": "senior_engineer",
+      "category": "direct",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/README.md",
+        "rag-chatbot/README.md",
+        "rag-chatbot/README.md",
+        "rag-chatbot/src/knowledge_base.py",
+        "rag-chatbot/src/knowledge_base.py"
+      ],
+      "sims": [
+        0.5616,
+        0.5529,
+        0.5137,
+        0.4845,
+        0.4551
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "rag-chatbot/src/knowledge_base.py"
+      ],
+      "hit": true,
+      "precision": 0.4,
+      "recall": 1.0,
+      "mrr": 0.25,
+      "phrase_hit": true
+    },
+    {
+      "id": "q028",
+      "role": "contractor",
+      "category": "indirect",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/data/product_faq.txt",
+        "rag-chatbot/data/product_faq.txt",
+        "rag-chatbot/data/product_faq.txt",
+        "brain-tumor-segmentation/README.md",
+        "rag-chatbot/src/knowledge_base.py"
+      ],
+      "sims": [
+        0.665,
+        0.4289,
+        0.3935,
+        0.3852,
+        0.3213
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "rag-chatbot/data/product_faq.txt"
+      ],
+      "hit": true,
+      "precision": 0.6,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    },
+    {
+      "id": "q028",
+      "role": "senior_engineer",
+      "category": "indirect",
+      "repo": "rag-chatbot",
+      "files": [
+        "rag-chatbot/data/product_faq.txt",
+        "rag-chatbot/data/product_faq.txt",
+        "rag-chatbot/data/product_faq.txt",
+        "brain-tumor-segmentation/README.md",
+        "rag-chatbot/src/knowledge_base.py"
+      ],
+      "sims": [
+        0.665,
+        0.4289,
+        0.3935,
+        0.3852,
+        0.3213
+      ],
+      "leaks": [],
+      "kind": "scored",
+      "expected_visible": [
+        "rag-chatbot/data/product_faq.txt"
+      ],
+      "hit": true,
+      "precision": 0.6,
+      "recall": 1.0,
+      "mrr": 1.0,
+      "phrase_hit": true
+    }
+  ]
+}

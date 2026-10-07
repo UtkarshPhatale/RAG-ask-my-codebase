@@ -96,3 +96,16 @@ as flaky tests to retry until they happened to pass was rejected outright
 — that would have hidden a real, explainable limitation behind
 test-flakiness noise, which is worse than documenting the limitation
 honestly.
+## Addendum (2026-10-06): the embedding-model attribution above was unverified
+
+The Phase 2 retrieval eval found that an IVFFlat index (`probes = 1`, built before
+data was loaded) was truncating results to 2-4 candidates for many real questions
+(see ADR 0005). The lab-notes example recorded in this ADR, where the chunk missed
+the top 50 for three paraphrases, was attributed to the embedding model's limits.
+That cause was never isolated, and the index is a likelier explanation. After the
+index was removed, q015 (an indirect question about the same chunk, avoiding its
+distinctive terms) retrieves `lab_notes.md` within the top 5 for senior_engineer.
+The three original paraphrases were not re-run, so this ADR's example stands as
+unverified. What remains valid: RLS enforcement is wording-independent, and
+retrieval quality is a separate property that should be measured, which `eval/`
+now does.

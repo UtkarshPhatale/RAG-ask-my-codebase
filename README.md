@@ -124,20 +124,28 @@ the enforcement doesn't look at wording at all.
 natural-language question successfully surfaces the *right* chunk in the
 first place depends on how well the embedding model (`all-MiniLM-L6-v2`, a
 small, free, local model) captures semantic similarity between a question
-and a chunk's content. During testing, a real example came up: a fictional
-lab-notes chunk about GPU allocation credentials didn't rank in the top 50
-results for any of three different natural-language paraphrases of its own
-content — despite the chunk being correctly embedded and ranking itself #1
-against its own exact embedding. That's a retrieval-precision limitation
-shared by every RAG system built on a small embedding model, not a defect
-in this project's access control.
+and a chunk's content. During Phase 2 evaluation, a real bug in this area was found and fixed. Early
+in the project, a fictional lab-notes chunk failed to rank in the top 50 for
+three paraphrases of its own content, and this was attributed to the embedding
+model. That attribution was never isolated, and the eval showed a likelier
+cause: an IVFFlat approximate-nearest-neighbor index (built before any data was
+loaded, searched with the default `probes = 1`) returned only 2-4 candidates for
+many real questions, so relevant chunks were never considered. The index was
+dropped (migration 007, ADR 0005); at ~2.7k chunks an exact scan is cheap and
+has full recall. On 28 hand-labeled questions at k=5, hit@5 went from 0.67 to
+0.93 (contractor) and from 0.44 to 0.92 (senior engineer), with no change to the
+embedding model, chunking, questions, or any access-control code. The original
+three lab-notes paraphrases were not re-run, so whether they would now rank is
+untested.
 
-The adversarial test suite's senior-access tests were adjusted accordingly:
-rather than relying on a paraphrase closing an embedding-similarity gap that
-has nothing to do with security, tests that need to confirm "can this role
-retrieve this known chunk" use the chunk's own exact embedding directly,
-isolating the actual claim under test (RLS permits/denies correctly) from
-an unrelated one (does the embedding model rank paraphrases well).
+RLS enforcement and retrieval quality remain separate properties. The
+adversarial suite's tests that need to confirm "can this role retrieve this known
+chunk" still use the chunk's own exact embedding, which isolates the security
+claim (RLS permits/denies correctly) from retrieval ranking. A zero-leak result
+against a retriever that returns a few irrelevant chunks is weak evidence; after
+the fix, the suite and the eval's leak check (0 leaks across 56 retrievals,
+including contractor questions that ask directly about senior-only files) run
+against a retriever that actually surfaces relevant content.
 
 **A related, more fundamental limitation**, worth stating outright: this
 project's scope classifications (`docs/access_design.md`) were all made by
