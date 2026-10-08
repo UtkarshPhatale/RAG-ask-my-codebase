@@ -74,11 +74,16 @@ fix is logged here. New questions go in a separate v2 file, never into this one.
 Found while diagnosing results with scripts/eval_inspect.py. Per the freeze rule,
 no label was changed.
 
-- q003: REPORT.md and dashboard/report.py outrank replay/engine.py. REPORT.md may
-  also legitimately answer the question (not verified).
-- q005: COMPLETE_THESIS_SUMMARY.txt chunks rank 1-2 and may also address the
-  question; an earlier grep for "intensity|failure" matched only an augmentation
-  line and the file was not read in full.
+- q003: REPORT.md and dashboard/report.py outrank replay/engine.py. The rank-1
+  REPORT.md chunk says the outcome classes (business_outcome / recoverable /
+  hard_failure) and a result_code are declared in the artifact and that the engine
+  has no app-specific logic: related and partly correct, but it does not describe
+  the decision procedure that engine.py's docstring does. A defensible near-miss
+  that file-level labels do not credit.
+- q005: COMPLETE_THESIS_SUMMARY.txt chunks rank 1-2. The rank-1 chunk ("Research
+  Contributions") only states a 13% tumor-core improvement and does not explain the
+  failure cause or the fix, and an earlier grep found no discussion of it elsewhere
+  in that file, so the label stands. A topical but non-answering top result.
 - q008: the top 4 chunks are all from pipeline.py, including the prompt-template
   chunks. phrase@5 counts this as a miss because the labeled phrase sits in a
   lower-ranked chunk, so phrase@5 understates retrieval quality for it.
