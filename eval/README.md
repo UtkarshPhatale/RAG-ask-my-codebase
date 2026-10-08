@@ -68,3 +68,19 @@ fix is logged here. New questions go in a separate v2 file, never into this one.
   targets it; a file-level label there would be ambiguous.
 - q019-q021 (unanswerable): the only keyword hit in the repos was
   nextplay_kanban/package-lock.json, which is not an ingested file type.
+
+## Post-baseline observations (labels unchanged)
+
+Found while diagnosing results with scripts/eval_inspect.py. Per the freeze rule,
+no label was changed.
+
+- q003: REPORT.md and dashboard/report.py outrank replay/engine.py. REPORT.md may
+  also legitimately answer the question (not verified).
+- q005: COMPLETE_THESIS_SUMMARY.txt chunks rank 1-2 and may also address the
+  question; an earlier grep for "intensity|failure" matched only an augmentation
+  line and the file was not read in full.
+- q008: the top 4 chunks are all from pipeline.py, including the prompt-template
+  chunks. phrase@5 counts this as a miss because the labeled phrase sits in a
+  lower-ranked chunk, so phrase@5 understates retrieval quality for it.
+- q016: escalation/models.py describes the same hand-back (recorded as a
+  near-miss before the run).

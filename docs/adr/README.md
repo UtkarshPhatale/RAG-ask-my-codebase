@@ -10,3 +10,4 @@ made.
 | [0002](0002-jwks-es256-over-static-secret.md) | JWT verification uses JWKS/ES256 (Supabase's current signing scheme), not a static HS256 shared secret. |
 | [0003](0003-test-retrieval-function-directly.md) | The adversarial suite tests `retrieve_chunks()` directly for the security guarantee; a separate, smaller suite tests the `/ask` HTTP endpoint for correct wiring. Neither replaces the other. |
 | [0004](0004-rls-enforcement-vs-retrieval-quality.md) | RLS enforcement (wording-independent, database-enforced) and retrieval quality (wording-dependent, embedding-model-limited) are different claims, tested and documented separately. |
+| [0005](0005-drop-ivfflat-index.md) | The IVFFlat index on `chunks.embedding` is dropped in favor of exact search: found by the retrieval eval, it truncated results to 2-4 chunks because it was built before data was loaded and searched with `probes = 1`. |
