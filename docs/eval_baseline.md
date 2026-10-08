@@ -112,3 +112,19 @@ chunk among all chunks (retrieved at depth 100).
    embedding, or larger chunks. Both require re-ingestion.
 3. Hybrid (BM25 + vector) search and reranking, kept only if they improve this baseline.
    Detecting a real gain probably needs a larger v2 question set.
+
+## k-sweep predictions (written 2026-10-07, before running the sweep)
+
+From the answer-bearing chunk ranks found by `eval_inspect` (senior role):
+hit misses at k=5 are q003 (first expected-file chunk at rank 10) and q016 (rank 11);
+phrase misses are q012 (rank 6), q023 (8), q016 (11), q003 (17), q008 (18), q010 (22)
+and q005 (48).
+
+| k | senior hit | senior phrase | contractor hit | contractor phrase |
+|---|---|---|---|---|
+| 5 (measured) | 0.92 | 0.72 | 0.93 | 0.73 |
+| 10 | 0.96 | 0.80 | 1.00 | 0.80 |
+| 20 | 1.00 | 0.92 | 1.00 | 0.93 |
+
+Still unrecovered at k=20: phrase for q005 and q010. Contractor ranks can shift by a
+few positions, since contractor retrieval excludes senior-only chunks.
