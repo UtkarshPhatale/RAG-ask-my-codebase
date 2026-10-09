@@ -205,3 +205,14 @@ Raising k to 10 would add 1-2 recovered questions per role, which is at the nois
 floor of a 28-question set, and would double the context sent to the generator
 with no answer-quality eval to show it helps. A Phase 3 reranker experiment
 (retrieve 20, rerank to 5) may make the question moot. Revisit with evidence.
+
+### Correction to the ceiling analysis (2026-10-08)
+
+The measured ceiling is 0.93 (contractor) and 0.88 (senior), so the file-size cap
+lowers achievable precision by only 7-12 points. Measured P@5 is 0.49 and 0.45 of that
+ceiling: roughly half of the slots that could hold chunks from a labeled file hold
+chunks from other files instead. Some of those are useful context (documentation that
+restates the code) and some are noise; without an answer-quality eval the two cannot
+be separated. The explanation above lists the file-size cap first, but it is the
+smaller effect. Low precision is real, and whether it hurts generated answers is
+untested.
