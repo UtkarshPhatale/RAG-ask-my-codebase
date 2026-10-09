@@ -128,3 +128,54 @@ and q005 (48).
 
 Still unrecovered at k=20: phrase for q005 and q010. Contractor ranks can shift by a
 few positions, since contractor retrieval excludes senior-only chunks.
+
+## k-sweep results (2026-10-07)
+
+Run: `python -m scripts.eval_sweep --out eval/results/sweep_exact.json`. Each question
+is retrieved once at k=20 and scored on prefixes (valid because search is exact, ADR 0005).
+
+| Role (questions) | k | hit | phrase | P | R | MRR |
+|---|---|---|---|---|---|---|
+| senior_engineer (25) | 3 | 0.88 | 0.60 | 0.48 | 0.82 | 0.77 |
+| | 5 | 0.92 | 0.72 | 0.39 | 0.86 | 0.78 |
+| | 10 | 0.96 | 0.80 | 0.28 | 0.92 | 0.79 |
+| | 20 | 1.00 | 0.92 | 0.19 | 1.00 | 0.79 |
+| contractor (15) | 3 | 0.87 | 0.67 | 0.53 | 0.80 | 0.76 |
+| | 5 | 0.93 | 0.73 | 0.45 | 0.87 | 0.77 |
+| | 10 | 1.00 | 0.80 | 0.33 | 0.93 | 0.78 |
+| | 20 | 1.00 | 0.93 | 0.25 | 1.00 | 0.78 |
+
+### Predictions vs. measured
+
+All eight predicted numbers (hit and phrase at k=10 and k=20, both roles) matched.
+This is a consistency check, not independent confirmation: the predictions were
+arithmetic on chunk ranks that `eval_inspect` had already measured on the same data. It
+confirms that the sweep's slicing and scoring agree with the per-question diagnostics.
+
+### Role comparison on the 15 questions both roles are scored on
+
+Hit and phrase are identical at every k. MRR at k=5 is 0.74 (senior) vs 0.77
+(contractor). Senior-only chunks appear in the senior's top 5 for 2 of the 15 questions
+without changing hit or phrase. On this set, the ten senior-only files do not crowd out
+relevant content for senior users; the MRR gap is under one question's worth and is
+noise. Example of the mechanism: q003's answer-bearing chunk ranks 16 for the
+contractor and 17 for the senior.
+
+### Findings
+
+1. The top 20 contains the key phrase for 23 of 25 senior questions and 14 of 15
+   contractor questions. Never recovered at k=20: q005 (both roles) and q010 (senior).
+2. Headroom: phrase@5 is 0.72 and phrase@20 is 0.92, so reordering the top 20 (e.g.
+   reranking) can recover at most 0.20 (5 of 25 questions). q005 and q010 need better
+   candidate generation (e.g. path headers, hybrid search), not reranking.
+3. Raising k from 5 to 10 adds 1 hit-question and 2 phrase-questions for senior, 1 and 1
+   for contractor, while precision falls from 0.39 to 0.28 and the context sent to the
+   generator doubles. By the noise rule above (under about two questions), weak evidence.
+4. File-level MRR barely moves (0.77-0.79) because the expected file is usually found at
+   rank 1-3. It says nothing about the answer chunk; a phrase-level MRR would be more
+   informative in a v2 eval.
+
+### Not measured
+
+Answer quality. Whether more retrieved context helps or hurts the generated answer is
+unknown, so the sweep alone cannot justify changing the `/ask` default of k=5.
