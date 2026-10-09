@@ -179,3 +179,29 @@ contractor and 17 for the senior.
 
 Answer quality. Whether more retrieved context helps or hurts the generated answer is
 unknown, so the sweep alone cannot justify changing the `/ask` default of k=5.
+
+
+## Why precision@5 is low (ceiling analysis, 2026-10-08)
+
+Precision@5 counts the fraction of the 5 retrieved chunks that come from a labeled
+file. It is capped by file size (a 3-chunk file can score at most 3/5), and it
+scores any other file's chunk as wrong even when it is useful context (e.g.
+REPORT.md restating the code). The ceiling below assumes every chunk of a labeled
+file counts as relevant, which is how the metric itself works, so it is generous.
+
+| Role (questions) | mean P@5 | mean ceiling | P@5 / ceiling |
+|---|---|---|---|
+| contractor (15) | 0.45 | 0.93 | 0.49 |
+| senior_engineer (25) | 0.39 | 0.88 | 0.45 |
+
+Precision is not a metric to optimize for this pipeline: the generator needs the
+answer present in its context, not a clean context. hit@5 and phrase@5 are the more
+informative numbers. Whether the extra, unlabeled chunks hurt generated answers is
+untested (no answer-quality eval).
+
+## Decision: `/ask` keeps k = 5 (2026-10-08)
+
+Raising k to 10 would add 1-2 recovered questions per role, which is at the noise
+floor of a 28-question set, and would double the context sent to the generator
+with no answer-quality eval to show it helps. A Phase 3 reranker experiment
+(retrieve 20, rerank to 5) may make the question moot. Revisit with evidence.

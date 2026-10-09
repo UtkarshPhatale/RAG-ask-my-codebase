@@ -156,6 +156,43 @@ codebase (a client's repo, an open-source project) is a genuinely harder,
 unsolved problem, deliberately deferred to Phase 4 of this project's roadmap
 rather than claimed as solved here.
 
+## Retrieval quality: measured
+
+Retrieval quality is measured separately from access control, on 28 hand-labeled
+questions (`eval/`), run as both roles at k=5, the value `/ask` uses.
+
+| Role (questions scored) | hit@5 | phrase@5 |
+|---|---|---|
+| contractor (15) | 0.93 | 0.73 |
+| senior_engineer (25) | 0.92 | 0.72 |
+
+- **hit@5**: a top-5 chunk comes from a file that answers the question.
+- **phrase@5**: a top-5 chunk contains a specific answer-bearing phrase. Stricter,
+  and a lower bound on true quality.
+- **Access control under the eval:** 0 leaks across 56 retrievals (top 20 checked).
+  On the 15 questions both roles are scored on, the two roles perform identically,
+  so senior-only content does not crowd out relevant results for senior users.
+- **What the eval found:** an approximate index was silently truncating results
+  (ADR 0005); fixing it took hit@5 from 0.67 to 0.93 (contractor) and 0.44 to 0.92
+  (senior), with nothing else changed.
+- **Known weaknesses:** 500-character chunking fragments module docstrings, and the
+  project's own docs outrank the code they restate. The top 20 contains the
+  answer-bearing chunk for 23 of 25 senior questions, so reranking has headroom,
+  but two questions need better candidate generation. Details, per-failure
+  diagnosis and the k-sweep are in `docs/eval_baseline.md`.
+- **Limits:** 28 questions (one question is worth 4-7 points), one author for the
+  corpus, questions and labels, few paraphrased questions, and no evaluation of
+  generated-answer quality.
+
+Reproduce:
+
+```bash
+python -m scripts.validate_eval     # check the question set against the live DB
+python -m scripts.eval_retrieval    # metrics + leak check (exit 1 on any leak)
+python -m scripts.eval_sweep        # k = 3/5/10/20 and role comparison
+python -m scripts.eval_inspect q003 # diagnose one question
+```
+
 ## Stack, and why
 
 | Choice | Reasoning |
@@ -172,7 +209,8 @@ rather than claimed as solved here.
 **Phase 0 (corpus + access design + schema):** complete.
 **Phase 1 (retrieval + RBAC enforcement):** complete through the adversarial
 test suite above. No demo UI yet — this is API-only.
-**Phase 2 (eval set, frontend, observability):** not started.
+**Phase 2 (eval set, frontend, observability):** eval set, retrieval metrics and
+failure analysis complete (see below); frontend, citation view and demo not started.
 **Phase 3 (CI/CD, Docker/deployment, hybrid search):** not started.
 
 This README will be updated as later phases land — it does not claim a live
