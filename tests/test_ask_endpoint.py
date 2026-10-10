@@ -77,3 +77,53 @@ def test_ask_with_malformed_header_not_bearer_prefix_returns_401(contractor_toke
         headers={"Authorization": contractor_token},  # missing "Bearer " prefix
     )
     assert response.status_code == 401
+
+
+# --- citations -------------------------------------------------------------
+from pathlib import Path
+
+from ingestion.chunking import load_access_map, resolve_scope
+
+ACCESS_MAP = load_access_map(Path(__file__).resolve().parent.parent / "ingestion" / "access_map.json")
+
+# Aimed directly at senior-only content (guardrails/policy.py).
+SENIOR_TARGETING_QUESTION = (
+    "How does the agent decide which domains and routes it may visit, and when "
+    "does it require confirmation for irreversible actions?"
+)
+
+
+def test_contractor_citations_never_reference_senior_only_files(contractor_token):
+    # Checked against access_map.json, NOT the database's own labels, so a wrong
+    # label in the database could not make this test agree with the bug.
+    response = client.post(
+        "/ask",
+        json={"question": SENIOR_TARGETING_QUESTION},
+        headers={"Authorization": f"Bearer {contractor_token}"},
+    )
+    assert response.status_code == 200
+    citations = response.json()["citations"]
+    assert len(citations) > 0
+    for c in citations:
+        assert c["required_scope"] == "contractor"
+        assert resolve_scope(c["repo"], c["path"], ACCESS_MAP) == "contractor", (
+            f"contractor was cited a senior-only file: {c['repo']}/{c['path']}"
+        )
+
+
+def test_citations_are_aligned_with_sources(senior_token):
+    # Shape only. Which files appear is retrieval quality, measured by eval/,
+    # not a security property (ADR 0003, ADR 0004).
+    response = client.post(
+        "/ask",
+        json={"question": SENIOR_TARGETING_QUESTION},
+        headers={"Authorization": f"Bearer {senior_token}"},
+    )
+    assert response.status_code == 200
+    body = response.json()
+    assert len(body["citations"]) == len(body["sources"]) > 0
+    for source, c in zip(body["sources"], body["citations"]):
+        assert c["content"] == source
+        assert c["repo"] != "unknown" and c["path"] != "unknown"
+        assert c["required_scope"] in {"contractor", "senior_engineer"}
+        assert isinstance(c["similarity"], float)

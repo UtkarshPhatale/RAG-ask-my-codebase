@@ -33,3 +33,26 @@ def retrieve_chunks(user_client: Client, question: str, match_count: int = 5) ->
     ).execute()
 
     return result.data
+
+
+def lookup_documents(user_client: Client, document_ids: list[str]) -> dict[str, dict]:
+    """
+    Maps document_id -> {"repo", "path"} for chunks that retrieval ALREADY returned.
+
+    Read as the authenticated user (same client as retrieve_chunks), so RLS on the
+    `documents` table applies here too. This labels chunks Postgres has already
+    approved; it does not filter anything. A document the user cannot see is simply
+    absent from the result, and the caller labels it "unknown" rather than dropping
+    the chunk, so this never becomes an app-layer access filter.
+    """
+    ids = sorted(set(document_ids))
+    if not ids:
+        return {}
+    rows = (
+        user_client.table("documents")
+        .select("id,repo,path")
+        .in_("id", ids)
+        .execute()
+        .data
+    )
+    return {r["id"]: {"repo": r["repo"], "path": r["path"]} for r in rows}
