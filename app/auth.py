@@ -1,9 +1,13 @@
+import logging
+
 from fastapi import Header, HTTPException, status
 from jose import jwt, JWTError
 import httpx
 from supabase import create_client, Client
 
 from app.config import SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY
+
+logger = logging.getLogger(__name__)
 
 JWKS_URL = f"{SUPABASE_URL}/auth/v1/.well-known/jwks.json"
 
@@ -71,28 +75,24 @@ def get_current_user(authorization: str = Header(...)) -> AuthedUser:
     user_client.postgrest.auth(token)
 
     try:
-        role_row = (
+        role_rows = (
             user_client.table("user_roles")
             .select("role")
             .eq("user_id", user_id)
-            .single()
+            .limit(1)
             .execute()
         )
     except Exception:
-        # .single() raises (rather than returning empty data) when zero rows
-        # match -- e.g. a real, validly-authenticated user who exists in
-        # Supabase Auth but has never been assigned a role in user_roles.
-        # This must fail closed as 403, matching the "no role means no
-        # access" intent -- not surface as an unhandled 500. Caught broadly
-        # here because postgrest's exact exception type isn't part of its
-        # stable public API; failing closed on ANY lookup error here is the
-        # correct default for an access-control check.
-        raise HTTPException(
-            status_code=403,
-            detail="Authenticated user has no assigned role in user_roles",
-        )
+        # A FAILED lookup is not the same as "no role". Zero matching rows is a
+        # normal empty result, handled below as 403. Anything raised here is a real
+        # error (network, timeout, 5xx). It still fails closed -- access is never
+        # granted -- but it is logged and reported as 503 so a transient error is
+        # not mistaken for a missing role (it previously surfaced as a misleading
+        # 403 "no assigned role" for a valid user).
+        logger.exception("role lookup failed for user %s", user_id)
+        raise HTTPException(status_code=503, detail="Role lookup failed; please retry")
 
-    if not role_row.data:
+    if not role_rows.data:
         raise HTTPException(
             status_code=403,
             detail="Authenticated user has no assigned role in user_roles",
@@ -101,6 +101,6 @@ def get_current_user(authorization: str = Header(...)) -> AuthedUser:
     return AuthedUser(
         user_id=user_id,
         email=email,
-        role=role_row.data["role"],
+        role=role_rows.data[0]["role"],
         client=user_client,
     )
