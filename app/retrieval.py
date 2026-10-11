@@ -3,7 +3,12 @@ from supabase import Client
 
 # Loaded once at import time — same model used at ingestion. Loading per-request
 # would reload ~90MB of weights on every /ask call.
-_embedder = SentenceTransformer("all-MiniLM-L6-v2")
+# Pinned to CPU on purpose. On Apple Silicon, sentence-transformers picks the MPS (Metal)
+# backend by default, and two requests encoding at once crashed inside PyTorch's MPS
+# kernel cache (SIGSEGV in MetalShaderLibrary::exec_unary_kernel, see ADR 0006). FastAPI
+# runs sync endpoints on a threadpool, so concurrent requests are concurrent threads.
+# For one short query per request, MiniLM on CPU is fast, so the GPU buys nothing here.
+_embedder = SentenceTransformer("all-MiniLM-L6-v2", device="cpu")
 
 
 def embed_query(text: str) -> list[float]:
