@@ -1,10 +1,12 @@
-from fastapi import FastAPI, Depends
+import time
+
+from fastapi import BackgroundTasks, FastAPI, Depends
 
 from app.auth import get_current_user, AuthedUser
 from app.schemas import AskRequest, AskResponse, Citation
-from app.retrieval import retrieve_chunks, lookup_documents
+from app.retrieval import DEFAULT_K, retrieve_chunks, lookup_documents
 from app.generation import generate_answer
-from app.logging_utils import log_query
+from app.query_log import write_query_log
 
 app = FastAPI(title="RAG-ask-my-codebase")
 
@@ -20,18 +22,17 @@ def me(user: AuthedUser = Depends(get_current_user)):
 
 
 @app.post("/ask", response_model=AskResponse)
-def ask(request: AskRequest, user: AuthedUser = Depends(get_current_user)):
-    chunks = retrieve_chunks(user.client, request.question)
+def ask(
+    request: AskRequest,
+    background: BackgroundTasks,
+    user: AuthedUser = Depends(get_current_user),
+):
+    t0 = time.perf_counter()
+    chunks = retrieve_chunks(user.client, request.question, match_count=DEFAULT_K)
     docs = lookup_documents(user.client, [c["document_id"] for c in chunks])
+    t1 = time.perf_counter()
     answer = generate_answer(request.question, chunks)
-
-    log_query(
-        user_id=user.user_id,
-        role=user.role,
-        question=request.question,
-        retrieved_chunk_ids=[c["id"] for c in chunks],
-        retrieved_scopes=[c["required_scope"] for c in chunks],
-    )
+    t2 = time.perf_counter()
 
     citations = [
         Citation(
@@ -44,6 +45,20 @@ def ask(request: AskRequest, user: AuthedUser = Depends(get_current_user)):
         )
         for c in chunks
     ]
+
+    # Written after the response is sent, as the caller (RLS applies). Never raises.
+    background.add_task(
+        write_query_log,
+        user.client,
+        user_id=user.user_id,
+        role=user.role,
+        question=request.question,
+        k=DEFAULT_K,
+        citations=citations,
+        retrieval_ms=round((t1 - t0) * 1000),
+        generation_ms=round((t2 - t1) * 1000),
+        total_ms=round((t2 - t0) * 1000),
+    )
 
     return AskResponse(
         question=request.question,

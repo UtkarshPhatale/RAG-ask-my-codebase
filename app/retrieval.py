@@ -1,6 +1,9 @@
 from sentence_transformers import SentenceTransformer
 from supabase import Client
 
+# Chunks sent to the generator. Decision recorded in docs/eval_baseline.md (k = 5).
+DEFAULT_K = 5
+
 # Loaded once at import time — same model used at ingestion. Loading per-request
 # would reload ~90MB of weights on every /ask call.
 # Pinned to CPU on purpose. On Apple Silicon, sentence-transformers picks the MPS (Metal)
@@ -15,7 +18,7 @@ def embed_query(text: str) -> list[float]:
     return _embedder.encode(text).tolist()
 
 
-def retrieve_chunks(user_client: Client, question: str, match_count: int = 5) -> list[dict]:
+def retrieve_chunks(user_client: Client, question: str, match_count: int = DEFAULT_K) -> list[dict]:
     """
     Retrieves the top-k most similar chunks for `question`, as the
     AUTHENTICATED USER represented by user_client (publishable key + their
