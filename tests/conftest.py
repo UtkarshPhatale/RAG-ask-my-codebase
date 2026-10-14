@@ -59,3 +59,25 @@ def contractor_token() -> str:
 @pytest.fixture(scope="session")
 def senior_token() -> str:
     return _get_token(*SENIOR_CREDS)
+
+
+# --- query_logs hygiene -------------------------------------------------------
+from app.config import SUPABASE_SECRET_KEY  # noqa: E402
+
+
+@pytest.fixture(scope="session", autouse=True)
+def _remove_log_rows_written_by_this_test_session():
+    """/ask writes a query_logs row on every call, so endpoint tests would pollute the
+    real log (and the Activity view). Remember the newest row before the session and
+    delete everything newer afterwards. Users cannot delete log rows (by design, see
+    migration 008), so this uses the secret key; it is the only thing here that does."""
+    admin = create_client(SUPABASE_URL, SUPABASE_SECRET_KEY)
+    latest = (
+        admin.table("query_logs").select("created_at")
+        .order("created_at", desc=True).limit(1).execute().data
+    )
+    boundary = latest[0]["created_at"].replace("+00:00", "Z") if latest else None
+    yield
+    q = admin.table("query_logs").delete()
+    q = q.gt("created_at", boundary) if boundary else q.neq("id", "00000000-0000-0000-0000-000000000000")
+    q.execute()
