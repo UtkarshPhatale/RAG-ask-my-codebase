@@ -1,9 +1,9 @@
 import time
 
-from fastapi import BackgroundTasks, FastAPI, Depends
+from fastapi import BackgroundTasks, FastAPI, Depends, Query
 
 from app.auth import get_current_user, AuthedUser
-from app.schemas import AskRequest, AskResponse, Citation
+from app.schemas import AskRequest, AskResponse, Citation, LogEntry
 from app.retrieval import DEFAULT_K, retrieve_chunks, lookup_documents
 from app.generation import generate_answer
 from app.query_log import write_query_log
@@ -66,4 +66,27 @@ def ask(
         answer=answer,
         sources=[c["content"] for c in chunks],
         citations=citations,
+    )
+
+
+@app.get("/logs", response_model=list[LogEntry])
+def logs(
+    limit: int = Query(50, ge=1, le=200),
+    user: AuthedUser = Depends(get_current_user),
+):
+    """
+    Recent /ask calls, newest first.
+
+    There is deliberately no role check here. The rows come from the CALLER's own
+    user-scoped client, so Postgres RLS decides what is visible (migration 008): a user
+    sees their own rows, a senior_engineer sees everyone's. The same handler returns
+    different rows to different users because the database says so, not this code.
+    """
+    return (
+        user.client.table("query_logs")
+        .select("*")
+        .order("created_at", desc=True)
+        .limit(limit)
+        .execute()
+        .data
     )

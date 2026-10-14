@@ -43,3 +43,11 @@ question, matching what the UI displayed.
 - Each /ask adds one database write (off the response path).
 - Users cannot delete log rows by design, so the tests clean up their own marker rows
   with the secret key. That is the only use of the secret key in these tests.
+
+## Read side (added with GET /logs)
+
+`GET /logs` returns the rows the caller's own client can read, newest first, with a
+validated `limit` (1-200). The handler contains no role check: contractors receive their
+own rows and seniors receive everyone's because RLS decides, the same way it does for
+chunks. Tests call the endpoint with real tokens and check both visibility sets, the
+response shape, ordering, limit validation and authentication.
