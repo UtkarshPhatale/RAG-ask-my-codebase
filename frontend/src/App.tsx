@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { ask } from './lib/api'
+import { ActivityView } from './components/ActivityView'
 import { ResultPanel, type PanelState } from './components/ResultPanel'
 import type { Role } from './types'
 import './App.css'
@@ -17,7 +18,10 @@ const IDLE: Record<Role, PanelState> = {
   senior_engineer: { status: 'idle' },
 }
 
+type Tab = 'compare' | 'activity'
+
 export default function App() {
+  const [tab, setTab] = useState<Tab>('compare')
   const [question, setQuestion] = useState('')
   const [panels, setPanels] = useState<Record<Role, PanelState>>(IDLE)
   const busy = ROLES.some((r) => panels[r].status === 'loading')
@@ -55,31 +59,45 @@ export default function App() {
         Same question, two roles. Access is enforced by Postgres row-level security, not by this UI.
       </p>
 
-      <form className="ask" onSubmit={onSubmit}>
-        <input
-          value={question}
-          onChange={(e) => setQuestion(e.target.value)}
-          placeholder="Ask how something works…"
-          aria-label="Question"
-        />
-        <button type="submit" disabled={busy || !question.trim()}>
-          {busy ? 'Asking…' : 'Ask both'}
+      <nav className="tabs">
+        <button type="button" className={tab === 'compare' ? 'active' : ''} onClick={() => setTab('compare')}>
+          Compare roles
         </button>
-      </form>
+        <button type="button" className={tab === 'activity' ? 'active' : ''} onClick={() => setTab('activity')}>
+          Activity
+        </button>
+      </nav>
 
-      <div className="examples">
-        {EXAMPLES.map((ex) => (
-          <button key={ex} type="button" onClick={() => submit(ex)} disabled={busy}>
-            {ex.length > 70 ? ex.slice(0, 67) + '…' : ex}
+      {/* Kept mounted (just hidden) so answers survive a trip to the Activity tab. */}
+      <div hidden={tab !== 'compare'}>
+        <form className="ask" onSubmit={onSubmit}>
+          <input
+            value={question}
+            onChange={(e) => setQuestion(e.target.value)}
+            placeholder="Ask how something works…"
+            aria-label="Question"
+          />
+          <button type="submit" disabled={busy || !question.trim()}>
+            {busy ? 'Asking…' : 'Ask both'}
           </button>
-        ))}
+        </form>
+
+        <div className="examples">
+          {EXAMPLES.map((ex) => (
+            <button key={ex} type="button" onClick={() => submit(ex)} disabled={busy}>
+              {ex.length > 70 ? ex.slice(0, 67) + '…' : ex}
+            </button>
+          ))}
+        </div>
+
+        <div className="panels">
+          {ROLES.map((r) => (
+            <ResultPanel key={r} role={r} state={panels[r]} />
+          ))}
+        </div>
       </div>
 
-      <div className="panels">
-        {ROLES.map((r) => (
-          <ResultPanel key={r} role={r} state={panels[r]} />
-        ))}
-      </div>
+      {tab === 'activity' && <ActivityView />}
     </main>
   )
 }
