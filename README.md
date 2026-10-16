@@ -41,6 +41,21 @@ The chunks that reach the FastAPI layer have already been filtered by
 Postgres before they exist in memory — the database has already decided,
 not the application.
 
+## Demo
+
+One question, asked as both roles at once. The contractor's retrieved context contains no
+senior-only chunks; the senior engineer's does (orange badges). The access decision is made by
+Postgres, not by the UI.
+
+![Same question asked as contractor and as senior engineer](docs/images/compare-roles.png)
+
+The Activity tab reads the query log through a single endpoint. The page has no role logic:
+Postgres returns a contractor only their own queries and a senior engineer everyone's.
+
+![Activity tab viewed as a senior engineer](docs/images/activity-senior.png)
+
+The UI runs locally; there is no deployed instance yet (Phase 3).
+
 ## Architecture
 
 ```
@@ -73,6 +88,25 @@ reliable access-control boundary — it can be prompted, confused, or simply
 wrong about what it should or shouldn't say. The generation function receives
 only chunks that have *already* passed through RLS. It doesn't know what a
 "contractor" is. It cannot leak what it never received.
+
+## Observability
+
+Every `/ask` call is recorded in a `query_logs` table: the caller's role, the question, each
+retrieved chunk (repo, path, scope, similarity) and retrieval, generation and total time.
+Access to it is enforced the same way as for chunks (ADR 0007):
+
+- a user can insert a row only about themselves, and the `role` column must match their real
+  role in `user_roles`, so a contractor cannot claim to be senior
+- a user can read their own rows; a senior engineer can read all rows
+- nobody can update or delete rows, and `anon` has no access
+
+The row is written by a background task after the response is sent, using the caller's own
+user-scoped client, so these policies apply to the writer too; a logging failure is caught and
+cannot break an answer. `GET /logs` returns whatever the caller's own client can read, with no
+role check in the handler.
+
+One limit worth stating: chunks that RLS blocked cannot be logged, because the application
+never receives them.
 
 ## What's been verified, and how
 
@@ -107,6 +141,21 @@ Covered:
 
 All tests pass against the live corpus (~155 documents, ~2,716 chunks across
 4 real repositories, 10 files marked senior-only).
+
+## Test suite
+
+42 tests, run with `python -m pytest -q` against the live database (a handful of them make real
+Claude calls):
+
+| Area | Tests | What they prove |
+|---|---|---|
+| RLS adversarial (`test_rbac_adversarial.py`) | 15 | restricted chunks are never retrieved, however the question is phrased |
+| `/ask` endpoint (`test_ask_endpoint.py`) | 7 | auth wiring, response shape, and that a contractor is never cited a senior-only file |
+| Role lookup (`test_auth_role_lookup.py`) | 3 | a failed lookup is a 503, zero rows a 403, a found role authenticates |
+| Embedding concurrency (`test_embedding_concurrency.py`) | 2 | the CPU-pinned embedder is safe under threads (ADR 0006) |
+| `query_logs` RLS (`test_query_logs_rls.py`) | 7 | insert, read, immutability and anon rules hold, tested as real users |
+| Log writer (`test_query_log_writer.py`) | 3 | `/ask` records the caller's row; a failing writer cannot break an answer |
+| `/logs` endpoint (`test_logs_endpoint.py`) | 5 | visibility sets, response shape, ordering, limit, authentication |
 
 ## What this project does and doesn't prove
 
@@ -207,16 +256,21 @@ python -m scripts.eval_inspect q003 # diagnose one question
 ## Project status
 
 **Phase 0 (corpus + access design + schema):** complete.
-**Phase 1 (retrieval + RBAC enforcement):** complete through the adversarial
-test suite above. No demo UI yet — this is API-only.
-**Phase 2 (eval set, frontend, observability):** eval set, retrieval metrics and
-failure analysis complete (see below); frontend, citation view and demo not started.
-**Phase 3 (CI/CD, Docker/deployment, hybrid search):** not started.
+**Phase 1 (retrieval + RBAC enforcement):** complete, with the adversarial suite above.
+**Phase 2 (eval, frontend, observability):** complete except a recorded demo. A 28-question
+retrieval eval with a baseline and failure analysis (`docs/eval_baseline.md`), a side-by-side
+two-role UI with citations, and RLS-protected query logs with an Activity tab.
+**Phase 3 (CI/CD, Docker/deployment, hybrid search or reranking):** not started.
 
-This README will be updated as later phases land — it does not claim a live
-demo, deployed instance, or frontend that don't exist yet.
+Architecture decisions are in `docs/adr/`. Two were found by running the system: an approximate
+vector index that silently truncated results (0005) and a native crash under concurrent requests
+(0006).
+
+This README does not claim a deployed instance or a hosted demo; the UI runs locally.
 
 ## Running it locally
+
+Backend:
 
 ```bash
 python3 -m venv venv
@@ -224,17 +278,32 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 
-Copy `.env.example` to `.env` and fill in your own Supabase project
-credentials and Anthropic API key. Then:
+Copy `.env.example` to `.env`, fill in your own Supabase project credentials and Anthropic API
+key, and apply `db/migrations/` in order. Then:
 
 ```bash
-uvicorn app.main:app --reload
+uvicorn app.main:app
 ```
 
-Run the adversarial test suite:
+Frontend (Node 22.12 or newer, which Vite 8 requires):
 
 ```bash
-python -m pytest tests/ -v
+cd frontend
+npm install
+cp .env.example .env.local   # fill in the Supabase URL, publishable key and the two demo users
+npm run dev                  # http://localhost:5173, proxies /api to the backend on :8000
+```
+
+The UI signs in as two demo users, one per role, using the credentials in `frontend/.env.local`
+(the same accounts the tests use). That is a demo harness: a deployed version would use a real
+login. Only the publishable key is ever used in the browser.
+
+Tests and the retrieval eval:
+
+```bash
+python -m pytest -q
+python -m scripts.validate_eval
+python -m scripts.eval_retrieval
 ```
 
 ## Security note on the corpus
