@@ -306,6 +306,8 @@ python -m scripts.validate_eval
 python -m scripts.eval_retrieval
 ```
 
+`bash scripts/check.sh` runs all three and stops at the first failure.
+
 ## Security note on the corpus
 
 Several "sensitive" files in the ingested corpus (e.g.
