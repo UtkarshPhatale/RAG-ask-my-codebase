@@ -196,6 +196,19 @@ the fix, the suite and the eval's leak check (0 leaks across 56 retrievals,
 including contractor questions that ask directly about senior-only files) run
 against a retriever that actually surfaces relevant content.
 
+**The guarantee is about chunks, not facts.** RLS decides which chunks a user can retrieve; it
+cannot decide what the contractor-visible chunks say. `REPORT.md` is classified `contractor`
+(public-facing documentation), and it restates the guardrail mechanism at a high level: that an
+allowlist, a confirmation rule and log redaction exist, and which functions enforce them. So a
+contractor's answer can describe the mechanism in those terms even though `guardrails/policy.py`
+itself is never retrieved for them, and the two-role demo shows exactly that: the contractor's
+answer stays at the level of the report, while the senior's draws on the code. That follows from
+the classification, not from a leak. Whether a document is safe to expose at that level of detail
+is a classification judgment, the same unsolved problem described below, and not something RLS can
+check. How much was verified: a keyword search of `REPORT.md` found mechanism descriptions and no
+rule values (such as the actual allowed domains or redaction patterns), but the file was not read
+in full.
+
 **A related, more fundamental limitation**, worth stating outright: this
 project's scope classifications (`docs/access_design.md`) were all made by
 hand, by someone who already knows the corpus intimately. The system
