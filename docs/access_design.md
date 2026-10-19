@@ -29,7 +29,7 @@ Everything else — general architecture, how to run the project, target-app beh
 | `escalation/models.py` | `senior_engineer` | Human-takeover control-transfer protocol (`InterventionRequest`, status machine, control-handoff invariant). Sensitive because it describes exactly how/when automation cedes or reclaims control — a boundary condition worth protecting like the guardrails. |
 | `escalation/resolve.py` | `senior_engineer` | Directly operates on the escalation store (`resolve()` call path) — same sensitivity as `models.py`. |
 | `login_session.py` | `senior_engineer` | Explains and implements the specific mechanism for keeping credentials out of traces/artifacts. The *reasoning* here is exactly the kind of thing that shouldn't be casually browsable. |
-| `escalation/console.py` | `contractor` | Operator-facing console UI for reviewing/acting on interventions — no enforcement logic itself, just display/interaction. **Open TODO, not yet rechecked:** this was flagged during initial classification for a follow-up read to confirm it doesn't embed policy decisions, and that follow-up never happened. Current classification stands as `contractor`, but should not be treated as a settled judgment until someone actually re-reads the file and either confirms it or reclassifies it. |
+| `escalation/console.py` | `contractor` | Operator-facing console UI for reviewing/acting on interventions — no enforcement logic itself, just display/interaction. Reviewed 2026-10-17: the file (82 lines) is a Flask mock operator console that lists pending interventions from `evidence/runs/*/intervention.json` and calls `InterventionStore.resolve()` from a form. It contains no allowlist, risk, redaction or secret-handling logic, so the criteria in this document do not apply and `contractor` stands. See Known open items for an inconsistency with `escalation/resolve.py`. |
 | `agent/discovery.py` | `contractor` | Discovery/locator-fallback logic — core mechanics, not a security boundary. |
 | `artifact/schema.py`, `artifact/builder.py` | `contractor` | Capability artifact data model — structural, not sensitive. |
 | `replay/engine.py`, `replay/self_heal.py` | `contractor` | Replay mechanics, outcome classification, self-healing — core engineering, not access-control. |
@@ -156,13 +156,20 @@ endpoint + the adversarial test suite.
 
 ## Known open items
 
-**Unresolved classification recheck (`escalation/console.py`):** flagged
-during initial Repo 1 classification as needing a follow-up read to confirm
-it has no embedded policy decisions. That follow-up was never done. It
-remains classified `contractor` by default, but this is a genuine gap
-between "classified" and "verified" — tracked here explicitly rather than
-left as an easy-to-miss inline caveat, so it doesn't silently get treated as
-settled.
+**`escalation/console.py` recheck (closed 2026-10-17):** read in full (82 lines). It is a mock
+Flask console: it lists pending interventions from each run's `intervention.json`, and a form calls
+`InterventionStore.resolve()`. There is no allowlist, risk, redaction or secret handling, so
+`contractor` is confirmed.
+
+**Open inconsistency: `escalation/resolve.py` vs `escalation/console.py`.** Both are thin front-ends
+onto the same `InterventionStore.resolve()` call (`resolve.py`'s docstring calls itself the CLI twin of
+the console's button). The Repo 1 table classifies `resolve.py` as `senior_engineer` because it
+"directly operates on the escalation store"; that reasoning applies equally to `console.py`, which is
+`contractor`. The protocol itself (status machine, handoff invariant) lives in `models.py`. By the
+written criteria, either both should be `contractor` or `resolve.py` needs a different rationale. Not
+changed now: reclassifying `resolve.py` would change the senior-only count from 10 to 9 in the docs,
+tests and eval scoring (q016 would become scoreable for contractors), and would require updating that
+file's rows in `documents` and `chunks`. Deferred to the classification work in Phase 4.
 
 **Indirect-query partial-context leakage (Phase 1 concern, not Phase 4):**
 if a contractor asks an *indirect* question that would only be fully
