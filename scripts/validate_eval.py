@@ -7,13 +7,19 @@ Checks (errors fail the run, warnings don't):
   - 'unanswerable' <=> empty expected list
   - every question has author_verified == true
   - every expected (repo, path) exists in the LIVE documents table
+  - every expected file exists in the local corpus_repos/ copy
   - every key_phrase appears verbatim in its expected file (local corpus_repos/)
+
+A missing local file is an ERROR, not a skip: skipping would disable the
+key-phrase check without anyone noticing (for example in a fresh CI checkout).
+Pass --allow-missing to downgrade that to a warning (local debugging only).
 
 Reads documents as senior-test via Supabase Auth + the publishable key, so RLS
 applies and senior_engineer sees every row. No secret key is needed.
 
-Usage: python -m scripts.validate_eval
+Usage: python -m scripts.validate_eval [--allow-missing]
 """
+import argparse
 import json
 import os
 import re
@@ -61,10 +67,14 @@ def load_documents() -> dict[tuple[str, str], str]:
         start += page
 
 
-def main() -> int:
+def main(allow_missing: bool = False) -> int:
     errors: list[str] = []
     warnings: list[str] = []
     questions = []
+
+    if not CORPUS.is_dir():
+        msg = f"local corpus directory not found: {CORPUS}"
+        (warnings if allow_missing else errors).append(msg)
 
     for n, line in enumerate(QUESTIONS.read_text().splitlines(), start=1):
         if not line.strip():
@@ -77,6 +87,7 @@ def main() -> int:
     docs = load_documents()
     seen_ids, seen_questions = set(), set()
     scope_hits, repo_hits, covered = Counter(), Counter(), set()
+    missing_local = 0
 
     for q in questions:
         qid = q.get("id", "<no id>")
@@ -114,6 +125,10 @@ def main() -> int:
             local = CORPUS / key[0] / key[1]
             if local.exists():
                 texts.append(local.read_text(errors="ignore"))
+            else:
+                missing_local += 1
+                msg = f"{qid}: local file missing, cannot check key_phrases: {local.relative_to(ROOT)}"
+                (warnings if allow_missing else errors).append(msg)
         if texts:
             for p in q["key_phrases"]:
                 if not any(p in t for t in texts):
@@ -127,6 +142,8 @@ def main() -> int:
     print("expected-file scope:", dict(scope_hits))
     print("expected-file repo:", dict(repo_hits))
     print(f"senior-only files covered: {len(senior_docs) - len(uncovered)}/{len(senior_docs)}")
+    if missing_local:
+        print(f"local files missing (key_phrase check skipped for them): {missing_local}")
     for k in uncovered:
         warnings.append(f"senior-only file has no question: {k}")
 
@@ -139,4 +156,10 @@ def main() -> int:
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    parser = argparse.ArgumentParser(description="Validate eval/questions.jsonl")
+    parser.add_argument(
+        "--allow-missing",
+        action="store_true",
+        help="warn instead of failing when a local corpus file is missing",
+    )
+    sys.exit(main(allow_missing=parser.parse_args().allow_missing))
