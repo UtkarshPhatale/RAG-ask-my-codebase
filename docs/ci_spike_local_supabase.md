@@ -1,7 +1,8 @@
 # Spike: can a local Supabase stack stand in for the hosted project in CI?
 
-Date: 2026-10-20 (auth check), 2026-10-21 (migrations). Status: auth and schema
-checks passed locally; RLS behaviour through PostgREST and a Linux runner are open.
+Date: 2026-10-20 (auth check), 2026-10-21 (migrations), 2026-10-23 (roles
+follow-up). Status: auth and schema checks passed locally; RLS behaviour through
+PostgREST on the local stack and a Linux runner are open.
 
 ## Question
 
@@ -33,8 +34,25 @@ the app depends on it.
   The only output was the expected ivfflat "little data" NOTICE from 003, whose
   index 007 drops.
 - After the migrations, row-level security is on for chunks, documents,
-  user_roles and query_logs.
+  user_roles and query_logs, and off for roles (see below).
 - The `weak_password` field in the sign-in response was `None`; nothing to act on.
+
+## Finding: `roles` was writable on the local stack; hosted differed
+
+- Local stack: `roles` had RLS off (migration 001 never enables it) and full
+  grants for anon and authenticated. An anonymous insert returned HTTP 201.
+- Hosted project: `roles` already had RLS on and zero policies, so writes were
+  denied by default, despite the same broad grants. This was read from
+  `pg_tables` and `pg_policies`; no write was attempted against hosted.
+- So the migration files and the hosted database had drifted: hosted had RLS on
+  for a table whose migration never enables it. The cause is unknown.
+- Migration 009 (RLS on, privileges revoked) fixes the files. On hosted, only
+  the REVOKE changed anything. After it, the grants query shows no `roles` rows,
+  and `test_roles_lockdown.py` plus `test_rbac_adversarial.py` pass (17 passed)
+  against hosted. The authenticated-user lockdown test has passed on hosted but
+  has not yet run on the local stack.
+- Lesson: the grants query alone does not show RLS state, so I wrongly assumed
+  hosted matched local. Check `pg_tables.rowsecurity` and `pg_policies` too.
 
 ## What is NOT established
 
@@ -45,17 +63,10 @@ the app depends on it.
 - Whether the local signing key and `kid` stay the same across restarts:
   app/auth.py caches the JWKS for the process lifetime, so CI should start the
   stack before the app.
-
-## Open observation: `roles` has row-level security disabled
-
-`pg_tables` shows `rowsecurity = f` for `roles`. Migration 001 creates the table
-and never enables RLS, so this follows from the migrations and is expected to be
-the same on the hosted project (not checked there). Whether `anon` or
-`authenticated` can write to it through PostgREST depends on Supabase's default
-grants and has NOT been tested. The likely impact is small (policies compare
-against literal role names and foreign keys block deleting roles in use), but it
-is a least-privilege gap and should be tested and, if confirmed, closed by a new
-migration. Not changed here.
+- `chunks`, `documents` and `user_roles` still carry full default grants
+  (including TRUNCATE) for anon and authenticated, on both local and hosted.
+  RLS is on for all three with select-only policies, so API writes are expected
+  to be denied, but this is untested. Planned: migration 010, test first.
 
 ## Next
 

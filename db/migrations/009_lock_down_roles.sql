@@ -2,10 +2,16 @@
 --
 -- Migration 001 created `roles` without enabling row-level security, and
 -- Supabase's default grants gave anon and authenticated full privileges on it.
--- Anyone holding the publishable key (it ships in the frontend) could therefore
--- insert rows through the REST API. Found by checking pg_tables.rowsecurity and
--- information_schema.role_table_grants during the CI spike, confirmed with an
--- anonymous insert on the local stack (HTTP 201).
+-- Found by checking pg_tables.rowsecurity and information_schema.role_table_grants
+-- during the CI spike.
+--
+-- LOCAL STACK (built only from these migrations): RLS was off, and an anonymous
+-- insert with the publishable key returned HTTP 201. Confirmed.
+-- HOSTED PROJECT: RLS was already ON (enabled outside the migration files,
+-- probably via the dashboard; not known) and pg_policies had zero rows for
+-- `roles`, so writes were denied by default. The broad grants were present.
+-- An anonymous write was not attempted against hosted, so "not exploitable
+-- there" is inferred from RLS-on-with-no-policies, not tested.
 --
 -- Impact was a least-privilege gap, not a data leak: the RLS policies compare
 -- against the literal names 'contractor' and 'senior_engineer', and nothing in
@@ -15,7 +21,8 @@
 -- The fix is deny-by-default: RLS on with no policies, and no table privileges
 -- for the API roles. Foreign-key checks (user_roles, documents, chunks,
 -- query_logs) run as the table owner, and ingestion uses the secret key, so
--- neither is affected.
+-- neither is affected. Applied to hosted on 2026-10-23: the ALTER was a no-op
+-- (RLS already on), the REVOKE removed the grants.
 --
 -- Rollback:
 --   alter table roles disable row level security;
