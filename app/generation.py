@@ -2,12 +2,25 @@ from anthropic import Anthropic
 
 from app.config import ANTHROPIC_API_KEY
 
-_client = Anthropic(api_key=ANTHROPIC_API_KEY)
+_client: Anthropic | None = None
 
 SYSTEM_PROMPT = """You are a codebase Q&A assistant. Answer the user's question \
 using ONLY the provided context chunks below. If the context doesn't contain \
 enough information to answer, say so honestly rather than guessing or using \
 outside knowledge. Cite which chunk(s) you used when relevant."""
+
+
+def _get_client() -> Anthropic:
+    """Create the Anthropic client on first use, not at import time, so code
+    paths that never call Claude do not need an API key."""
+    global _client
+    if _client is None:
+        if not ANTHROPIC_API_KEY:
+            raise RuntimeError(
+                "ANTHROPIC_API_KEY is not set; it is required to generate an answer."
+            )
+        _client = Anthropic(api_key=ANTHROPIC_API_KEY)
+    return _client
 
 
 def generate_answer(question: str, chunks: list[dict]) -> str:
@@ -29,7 +42,7 @@ def generate_answer(question: str, chunks: list[dict]) -> str:
         for i, c in enumerate(chunks)
     )
 
-    message = _client.messages.create(
+    message = _get_client().messages.create(
         model="claude-haiku-4-5-20251001",
         max_tokens=1024,
         system=SYSTEM_PROMPT,
