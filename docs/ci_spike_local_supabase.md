@@ -54,23 +54,32 @@ the app depends on it.
 - Lesson: the grants query alone does not show RLS state, so I wrongly assumed
   hosted matched local. Check `pg_tables.rowsecurity` and `pg_policies` too.
 
+## Update 2026-10-28: local stack results
+
+- Fake users (contractor, senior_engineer, one with no role) are created on the
+  local stack by `scripts/setup_local_test_users.py`, which refuses to run
+  unless the URL is local.
+- The corpus was ingested into the local stack: 155 documents, 2,716 chunks, 10
+  senior-only documents, the same totals as hosted.
+- `tests/test_rbac_adversarial.py` passes 15/15 against the local stack, and the
+  retrieval eval reproduces the hosted baseline exactly (contractor hit@5 0.93,
+  senior 0.92, same precision, recall and MRR) with 0 leaks in 56 retrievals.
+- Migration 010 (SELECT-only grants on chunks, documents, user_roles) is applied
+  on both local and hosted. On hosted, after the revoke, the full `check.sh`
+  passes (46 tests, question set OK, eval unchanged).
+
 ## What is NOT established
 
-- The auth check used a copy of the verification logic, not app/auth.py itself.
-- RLS enforcement through the local PostgREST with real user JWTs is untested.
-  Applying the migrations only shows the policies exist, not that they behave.
+- The auth check used a copy of the verification logic, not app/auth.py itself
+  (the adversarial suite does exercise app/auth.py against the local stack).
 - Not tried on a GitHub Actions runner (Linux); only on a Mac.
 - Whether the local signing key and `kid` stay the same across restarts:
   app/auth.py caches the JWKS for the process lifetime, so CI should start the
   stack before the app.
-- `chunks`, `documents` and `user_roles` still carry full default grants
-  (including TRUNCATE) for anon and authenticated, on both local and hosted.
-  RLS is on for all three with select-only policies, so API writes are expected
-  to be denied, but this is untested. Planned: migration 010, test first.
+- Whether the local stack's results match hosted on a different machine or
+  library versions.
 
 ## Next
 
-Create the fake test users and their user_roles rows on the local stack, ingest
-the corpus, and run the RLS suite against it. If that fails for a reason the
-local stack cannot fix, fall back to a second hosted project (Option B) and
-record that in ADR 0008.
+Wire this into GitHub Actions (ADR 0008 first), starting with the tests that
+need no database.
