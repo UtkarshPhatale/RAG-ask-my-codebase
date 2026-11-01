@@ -1,0 +1,29 @@
+name: unit
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  no-key-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install only what these tests import
+        run: pip install pytest==9.1.1 anthropic==1.8.0 python-dotenv==1.2.3
+      - name: Generation tests without any API key
+        # app/config.py reads the Supabase variables at import, so dummy values
+        # are set. They point nowhere and no test here makes a network call.
+        # ANTHROPIC_API_KEY is deliberately not set. --noconftest skips
+        # tests/conftest.py, whose session fixture needs a real database.
+        env:
+          SUPABASE_URL: http://127.0.0.1:1
+          SUPABASE_PUBLISHABLE_KEY: dummy
+          SUPABASE_SECRET_KEY: dummy
+        run: python -m pytest tests/test_generation_lazy.py --noconftest -q
