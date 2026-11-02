@@ -52,3 +52,24 @@ Leak check: 0 leaks in 56 retrievals. Reproduced against the hosted project on
   answer-quality eval exists).
 - Whether the local-stack eval reproduces the hosted numbers (to be measured
   before the eval is used as a CI gate).
+
+## CI job inventory (2026-11-01)
+
+What each test file needs, read from the files themselves. `tests/conftest.py` has a
+session-wide autouse fixture that connects to the database with the secret key, so any
+run that keeps conftest needs a database; `--noconftest` skips it.
+
+| File | Needs | Planned CI job |
+|---|---|---|
+| test_generation_lazy.py | nothing (monkeypatch only) | `unit` (running since 2026-10-31) |
+| test_embedding_concurrency.py | torch, sentence-transformers, model download; no database; run with `--noconftest` | separate job with model cache |
+| test_auth_role_lookup.py | real login token from Supabase Auth (stubs only the role lookup) | local stack |
+| test_query_log_writer.py | database (module fixture connects; 1 of 3 tests is database-free) | local stack |
+| test_ask_endpoint.py | database; currently makes real Claude calls | local stack, generation stubbed |
+| test_rbac_adversarial.py | database and ingested corpus | local stack |
+| test_roles_lockdown.py | database | local stack |
+| test_logs_endpoint.py, test_query_logs_rls.py | not re-read for this note; expected to need the database | local stack |
+
+Consequence: the database-free job covers little, and most of the value arrives with
+the local-stack job. The `unit` workflow has not yet been confirmed green on a GitHub
+runner.
