@@ -19,3 +19,7 @@ dist/
 
 logs/
 demo-assets/
+
+# Supabase CLI local state (config.toml is kept; it is committed for CI)
+supabase/.temp/
+supabase/.branches/
