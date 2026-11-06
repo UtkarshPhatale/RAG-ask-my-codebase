@@ -71,5 +71,17 @@ run that keeps conftest needs a database; `--noconftest` skips it.
 | test_logs_endpoint.py, test_query_logs_rls.py | not re-read for this note; expected to need the database | local stack |
 
 Consequence: the database-free job covers little, and most of the value arrives with
-the local-stack job. The `unit` workflow has not yet been confirmed green on a GitHub
-runner.
+the local-stack job. The unit workflow has run green on a GitHub runner (runs #1 to #4, 13-15 s each, as of 2026-11-05).
+
+## Hosted project pause (2026-11-05)
+
+Supabase paused the free-tier project RAG-ask-my-codebase on 2026-11-04 after 7 days
+without activity (last hosted run: 2026-10-28). It can be unpaused from the dashboard
+within 90 days. Consequences:
+
+- CI is unaffected: it uses a local stack (ADR 0008) and never touches the hosted project.
+- Anything run against `.env` (check.sh, the hosted test runs) fails until it is unpaused.
+- The demo recording needs a live backend: unpause the hosted project or point the
+  frontend at the local stack.
+- Deployment checklist: a free-tier project that pauses after a week will break a public
+  live URL. Options to evaluate: a keep-alive request, or a paid plan. Not decided.
