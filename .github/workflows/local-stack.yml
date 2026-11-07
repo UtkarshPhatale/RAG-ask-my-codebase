@@ -1,0 +1,28 @@
+name: local-stack
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/local-stack.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  start-stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: supabase/setup-cli@v1
+        with:
+          version: 2.121.0
+      - name: Start the local Supabase stack
+        run: |
+          supabase init
+          time supabase start
+      - name: Show which keys exist (names only, no values)
+        run: supabase status -o env 2>/dev/null | cut -d= -f1
+      - name: Show the published JWKS
+        run: curl -s http://127.0.0.1:54321/auth/v1/.well-known/jwks.json
