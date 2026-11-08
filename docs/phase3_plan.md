@@ -85,3 +85,13 @@ within 90 days. Consequences:
   frontend at the local stack.
 - Deployment checklist: a free-tier project that pauses after a week will break a public
   live URL. Options to evaluate: a keep-alive request, or a paid plan. Not decided.
+
+## CI status (2026-11-07)
+
+- `unit` ran green four times (#1 to #4, 13-15 s each).
+- `unit` #5 (docs-only commit 50b50d1) failed in 2 s and `unit` #6 (e87ecb3) failed in
+  4 s. `local-stack` #1 (e87ecb3) failed in 2 s. The cause is not yet known; failures this
+  fast ran none of the workflow's own steps, but that is an inference, not a finding.
+- So the stage-one local-stack job has not yet shown startup time or the JWKS algorithm
+  on Linux. Nothing is established about the local stack on a runner.
+  
