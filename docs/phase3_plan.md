@@ -86,12 +86,14 @@ within 90 days. Consequences:
 - Deployment checklist: a free-tier project that pauses after a week will break a public
   live URL. Options to evaluate: a keep-alive request, or a paid plan. Not decided.
 
-## CI status (2026-11-07)
+## CI status (2026-11-09)
 
 - `unit` ran green four times (#1 to #4, 13-15 s each).
-- `unit` #5 (docs-only commit 50b50d1) failed in 2 s and `unit` #6 (e87ecb3) failed in
-  4 s. `local-stack` #1 (e87ecb3) failed in 2 s. The cause is not yet known; failures this
-  fast ran none of the workflow's own steps, but that is an inference, not a finding.
-- So the stage-one local-stack job has not yet shown startup time or the JWKS algorithm
-  on Linux. Nothing is established about the local stack on a runner.
-  
+- Runs #5 to #8 and `local-stack` #1 failed within 2-4 s. The job annotation read "The job
+  was not started because your account is locked due to a billing issue", and the
+  Licensing page showed the account disabled for a failed charge. The repo is public and
+  the plan is GitHub Free, with $0 billable Actions usage, so this was an account billing
+  state, not a workflow bug.
+- After the payment method was updated on 2026-11-09, a re-run of `unit` #8 went green.
+- Still not established: `local-stack` has never run, so Supabase startup on a runner,
+  its time, and the JWKS algorithm on Linux are unmeasured.
