@@ -97,3 +97,6 @@ within 90 days. Consequences:
 - After the payment method was updated on 2026-11-09, a re-run of `unit` #8 went green.
 - Still not established: `local-stack` has never run, so Supabase startup on a runner,
   its time, and the JWKS algorithm on Linux are unmeasured.
+- 2026-11-09: `local-stack` #2 ran green on a GitHub runner (start-stack 1m 48s). Not yet
+  recorded: the JWKS algorithm on Linux, migrations, users and ingestion on the runner.
+  
