@@ -5,13 +5,14 @@ on:
   push:
     paths:
       - ".github/workflows/local-stack.yml"
+      - "db/migrations/**"
 
 permissions:
   contents: read
 
 jobs:
   start-stack:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
@@ -22,7 +23,19 @@ jobs:
         run: |
           supabase init
           time supabase start
-      - name: Show which keys exist (names only, no values)
-        run: supabase status -o env 2>/dev/null | cut -d= -f1
-      - name: Show the published JWKS
-        run: curl -s http://127.0.0.1:54321/auth/v1/.well-known/jwks.json
+      - name: Show the published JWKS algorithm
+        run: curl -s http://127.0.0.1:54321/auth/v1/.well-known/jwks.json | grep -o '"alg":"[A-Z0-9]*"'
+      - name: Apply migrations (005 seed file is skipped on purpose)
+        run: |
+          DB=$(docker ps --format '{{.Names}}' | grep '^supabase_db_')
+          [ "$(echo "$DB" | wc -l)" -eq 1 ] || { echo "expected exactly one db container, got: $DB"; exit 1; }
+          echo "db container: $DB"
+          for f in db/migrations/001_*.sql db/migrations/002_*.sql db/migrations/003_*.sql db/migrations/004_*.sql db/migrations/006_*.sql db/migrations/007_*.sql db/migrations/008_*.sql db/migrations/009_*.sql db/migrations/010_*.sql; do
+            echo "== $f"
+            docker exec -i "$DB" psql -U postgres -v ON_ERROR_STOP=1 -q < "$f"
+          done
+      - name: Show tables and RLS flags
+        run: |
+          DB=$(docker ps --format '{{.Names}}' | grep '^supabase_db_')
+          docker exec -i "$DB" psql -U postgres -c "select tablename, rowsecurity from pg_tables where schemaname='public' order by 1;"
+          docker exec -i "$DB" psql -U postgres -c "select table_name, grantee, string_agg(privilege_type, ',' order by privilege_type) as privileges from information_schema.role_table_grants where table_schema='public' and grantee in ('anon','authenticated') group by 1,2 order by 1,2;"
