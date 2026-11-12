@@ -99,4 +99,11 @@ within 90 days. Consequences:
   its time, and the JWKS algorithm on Linux are unmeasured.
 - 2026-11-09: `local-stack` #2 ran green on a GitHub runner (start-stack 1m 48s). Not yet
   recorded: the JWKS algorithm on Linux, migrations, users and ingestion on the runner.
-  
+
+- 2026-11-11: `local-stack` stage two ran green on a GitHub runner (ubuntu-24.04, 1m 52s).
+  Migrations 001-004 and 006-010 applied with no errors (005 skipped). RLS is on for chunks,
+  documents, query_logs, roles and user_roles, and the grants match the local Mac stack
+  (SELECT only on chunks, documents and user_roles; INSERT,SELECT on query_logs). The db
+  container was named supabase_db_RAG-ask-my-codebase (it follows the repo folder name).
+  Not yet checked on the runner: fake users, ingestion, and the test suite and eval.
+
