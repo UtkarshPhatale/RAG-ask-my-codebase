@@ -6,6 +6,10 @@ on:
     paths:
       - ".github/workflows/local-stack.yml"
       - "db/migrations/**"
+      - "scripts/setup_local_test_users.py"
+      - "scripts/ingest_repo.py"
+      - "ingestion/**"
+      - "requirements.txt"
 
 permissions:
   contents: read
@@ -13,9 +17,14 @@ permissions:
 jobs:
   start-stack:
     runs-on: ubuntu-24.04
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
       - uses: supabase/setup-cli@v1
         with:
           version: 2.121.0
@@ -39,3 +48,40 @@ jobs:
           DB=$(docker ps --format '{{.Names}}' | grep '^supabase_db_')
           docker exec -i "$DB" psql -U postgres -c "select tablename, rowsecurity from pg_tables where schemaname='public' order by 1;"
           docker exec -i "$DB" psql -U postgres -c "select table_name, grantee, string_agg(privilege_type, ',' order by privilege_type) as privileges from information_schema.role_table_grants where table_schema='public' and grantee in ('anon','authenticated') group by 1,2 order by 1,2;"
+      - name: Install CPU-only torch, then the rest of requirements.txt
+        run: |
+          pip install torch==2.14.0 --index-url https://download.pytorch.org/whl/cpu
+          grep -v '^torch==' requirements.txt > /tmp/requirements-no-torch.txt
+          pip install -r /tmp/requirements-no-torch.txt
+      - name: Cache the embedding model
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: hf-all-MiniLM-L6-v2-v1
+      - name: Point the environment at the local stack (values are masked, never printed)
+        run: |
+          get() { supabase status -o env 2>/dev/null | grep "^$1=" | cut -d= -f2- | tr -d '"'; }
+          PUB=$(get PUBLISHABLE_KEY); SEC=$(get SECRET_KEY)
+          [ -n "$PUB" ] && [ -n "$SEC" ] || { echo "local stack keys not found"; exit 1; }
+          echo "::add-mask::$PUB"
+          echo "::add-mask::$SEC"
+          {
+            echo "SUPABASE_URL=http://127.0.0.1:54321"
+            echo "SUPABASE_PUBLISHABLE_KEY=$PUB"
+            echo "SUPABASE_SECRET_KEY=$SEC"
+          } >> "$GITHUB_ENV"
+      - name: Create the fake test users
+        run: python -m scripts.setup_local_test_users
+      - name: Check the tables are empty, then ingest the four repos
+        run: |
+          DB=$(docker ps --format '{{.Names}}' | grep '^supabase_db_')
+          N=$(docker exec -i "$DB" psql -U postgres -tA -c "select count(*) from documents;")
+          [ "$N" = "0" ] || { echo "documents not empty ($N rows); refusing to ingest twice"; exit 1; }
+          for r in interface-ai-computer-use-project nextplay_kanban brain-tumor-segmentation rag-chatbot; do
+            python scripts/ingest_repo.py "$r" 2>&1 | grep -E "Done|Error|Traceback"
+            [ "${PIPESTATUS[0]}" -eq 0 ] || exit 1
+          done
+      - name: Show totals (expected 155 | 2716 | 10)
+        run: |
+          DB=$(docker ps --format '{{.Names}}' | grep '^supabase_db_')
+          docker exec -i "$DB" psql -U postgres -c "select (select count(*) from documents) as documents, (select count(*) from chunks) as chunks, (select count(*) from documents where required_scope='senior_engineer') as senior_docs;"
