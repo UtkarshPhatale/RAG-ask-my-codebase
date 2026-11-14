@@ -107,3 +107,9 @@ within 90 days. Consequences:
   container was named supabase_db_RAG-ask-my-codebase (it follows the repo folder name).
   Not yet checked on the runner: fake users, ingestion, and the test suite and eval.
 
+- 2026-11-13: `local-stack` stage three ran green on a GitHub runner (run #4, 5m 4s, empty
+  caches). CPU-only torch 2.14.0 installed from the PyTorch CPU index. Fake users were
+  created and the four repos ingested: 155 documents, 2,716 chunks, 10 senior-only, the same
+  as the Mac. Not yet run on the runner: the test suite and the retrieval eval, so whether
+  CPU-Linux embeddings reproduce the baseline is unmeasured.
+  
