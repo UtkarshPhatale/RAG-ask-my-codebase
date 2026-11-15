@@ -81,3 +81,26 @@ def _remove_log_rows_written_by_this_test_session():
     q = admin.table("query_logs").delete()
     q = q.gt("created_at", boundary) if boundary else q.neq("id", "00000000-0000-0000-0000-000000000000")
     q.execute()
+
+
+# --- optional generation stub -------------------------------------------------
+import os  # noqa: E402
+
+
+@pytest.fixture(autouse=True)
+def _stub_generation_when_requested(request, monkeypatch):
+    """With STUB_GENERATION=1 (set by CI), /ask returns a canned answer instead of
+    calling Claude. Tests marked live_llm are never stubbed. Retrieval, auth, RLS and
+    logging still run for real; only the paid generation call is replaced."""
+    if os.environ.get("STUB_GENERATION") != "1":
+        return
+    if request.node.get_closest_marker("live_llm"):
+        return
+    import app.main
+
+    monkeypatch.setattr(
+        app.main,
+        "generate_answer",
+        lambda question, chunks: "[stubbed answer: no Claude call was made]",
+    )
+    
