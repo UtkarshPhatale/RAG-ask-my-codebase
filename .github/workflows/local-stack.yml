@@ -85,3 +85,13 @@ jobs:
         run: |
           DB=$(docker ps --format '{{.Names}}' | grep '^supabase_db_')
           docker exec -i "$DB" psql -U postgres -c "select (select count(*) from documents) as documents, (select count(*) from chunks) as chunks, (select count(*) from documents where required_scope='senior_engineer') as senior_docs;"
+      - name: Run the full test suite (generation stubbed, no Anthropic key)
+        env:
+          STUB_GENERATION: "1"
+        run: |
+          set -o pipefail
+          python -m pytest -q 2>&1 | tail -15
+      - name: Retrieval eval (prints the table; fails on any leak)
+        run: |
+          set -o pipefail
+          python -m scripts.eval_retrieval 2>&1 | grep -E "^(contractor|senior_engineer) +[0-9]|LEAK"
