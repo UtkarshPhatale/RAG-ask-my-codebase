@@ -1,5 +1,8 @@
 # RAG-ask-my-codebase
 
+![unit](https://github.com/UtkarshPhatale/RAG-ask-my-codebase/actions/workflows/unit.yml/badge.svg) ![local-stack](https://github.com/UtkarshPhatale/RAG-ask-my-codebase/actions/workflows/local-stack.yml/badge.svg)
+
+
 A "codebase Q&A" RAG assistant with role-based access control enforced at the
 **database layer**, not the application layer or the UI.
 
