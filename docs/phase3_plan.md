@@ -112,4 +112,10 @@ within 90 days. Consequences:
   created and the four repos ingested: 155 documents, 2,716 chunks, 10 senior-only, the same
   as the Mac. Not yet run on the runner: the test suite and the retrieval eval, so whether
   CPU-Linux embeddings reproduce the baseline is unmeasured.
-  
+
+- 2026-11-16: `local-stack` run #5 (commit 25f31b1) ran green in 3m 36s with warm caches. The
+  stubbed suite gave 46 passed with no Anthropic key, and the retrieval eval reproduced the
+  baseline exactly on CPU-only torch on Linux (contractor 0.93 / 0.73 / 0.45 / 0.87 / 0.77,
+  senior 0.92 / 0.72 / 0.39 / 0.86 / 0.78, 0 leaks in 56 retrievals). Not yet done: the eval is
+  printed, not gated, and the live_llm job does not exist.
+
