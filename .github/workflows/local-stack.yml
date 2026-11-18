@@ -6,10 +6,14 @@ on:
     paths:
       - ".github/workflows/local-stack.yml"
       - "db/migrations/**"
-      - "scripts/setup_local_test_users.py"
-      - "scripts/ingest_repo.py"
+      - "scripts/**"
       - "ingestion/**"
+      - "app/**"
+      - "tests/**"
+      - "eval/**"
+      - "corpus_repos/**"
       - "requirements.txt"
+      - "pytest.ini"
 
 permissions:
   contents: read
