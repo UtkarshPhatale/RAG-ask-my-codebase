@@ -161,9 +161,11 @@ def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--k", type=int, default=5, help="chunks retrieved per question (default 5, as /ask)")
     ap.add_argument("--out", type=Path, default=None, help="write per-question results as JSON")
+    ap.add_argument("--min-hit", type=float, default=None,
+                help="exit non-zero if any role's hit@k is below this floor (CI gate)")
     args = ap.parse_args()
     k = args.k
-
+    
     questions = [json.loads(l) for l in QUESTIONS.read_text().splitlines() if l.strip()]
     assert all(q["author_verified"] for q in questions), "unverified question in the set"
     access_map = load_access_map(ACCESS_MAP)
@@ -224,7 +226,15 @@ def main() -> int:
              "rows": rows}, indent=2))
         print(f"\nwrote {args.out}")
 
-    return 1 if leaks else 0
+    below = []
+    if args.min_hit is not None:
+        for role in clients:
+            s = summarize([r for r in rows if r["role"] == role])
+            if not (s["hit"] >= args.min_hit):  # also catches nan
+                below.append((role, s["hit"]))
+        for role, h in below:
+            print(f"\nHIT FLOOR FAILED: {role} hit@{k} = {h:.2f} < {args.min_hit:.2f}")
+    return 1 if (leaks or below) else 0
 
 
 if __name__ == "__main__":
