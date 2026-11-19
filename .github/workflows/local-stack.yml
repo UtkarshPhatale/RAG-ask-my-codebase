@@ -98,4 +98,4 @@ jobs:
       - name: Retrieval eval (prints the table; fails on any leak)
         run: |
           set -o pipefail
-          python -m scripts.eval_retrieval 2>&1 | grep -E "^(contractor|senior_engineer) +[0-9]|LEAK"
+          python -m scripts.eval_retrieval --min-hit 0.85 2>&1 | grep -E "^(contractor|senior_engineer) +[0-9]|LEAK|HIT FLOOR"
