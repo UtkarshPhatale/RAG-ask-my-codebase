@@ -119,3 +119,7 @@ within 90 days. Consequences:
   senior 0.92 / 0.72 / 0.39 / 0.86 / 0.78, 0 leaks in 56 retrievals). Not yet done: the eval is
   printed, not gated, and the live_llm job does not exist.
 
+- 2026-11-18: the eval is now gated. `eval_retrieval --min-hit 0.85` runs in `local-stack`
+  (run #7, commit eeabd6c, 3m 40s): 48 tests passed, contractor hit@5 0.93, senior 0.92, 0 leaks.
+  The failing path was checked locally only (floor 0.99 exits 1), not on a runner.
+
