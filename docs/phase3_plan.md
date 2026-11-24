@@ -123,3 +123,10 @@ within 90 days. Consequences:
   (run #7, commit eeabd6c, 3m 40s): 48 tests passed, contractor hit@5 0.93, senior 0.92, 0 leaks.
   The failing path was checked locally only (floor 0.99 exits 1), not on a runner.
 
+- 2026-11-23: GitHub Actions bumped off Node 20 in three commits: checkout v7 (0fa2267),
+  cache v6 and setup-python v7 (7d11a43), setup-cli v3 (821f710). After each push `unit` and
+  `local-stack` stayed green; the latest run (#10) took 4m 0s with 48 tests passed and the
+  eval unchanged (contractor 0.93, senior 0.92, 0 leaks). After the cache/setup-python bump
+  the warning listed only setup-cli. Not checked after the setup-cli bump: whether the
+  warning is gone, the stack start time, and the JWKS output.
+
