@@ -163,10 +163,15 @@ def main() -> int:
     ap.add_argument("--out", type=Path, default=None, help="write per-question results as JSON")
     ap.add_argument("--min-hit", type=float, default=None,
                 help="exit non-zero if any role's hit@k is below this floor (CI gate)")
+    ap.add_argument("--questions", type=Path, default=QUESTIONS,
+                    help="question file to score (default eval/questions.jsonl)")
     args = ap.parse_args()
     k = args.k
     
-    questions = [json.loads(l) for l in QUESTIONS.read_text().splitlines() if l.strip()]
+    if not args.questions.is_file():
+        print(f"questions file not found: {args.questions}")
+        return 1
+    questions = [json.loads(l) for l in args.questions.read_text().splitlines() if l.strip()]
     assert all(q["author_verified"] for q in questions), "unverified question in the set"
     access_map = load_access_map(ACCESS_MAP)
 

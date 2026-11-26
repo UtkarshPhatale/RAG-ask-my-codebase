@@ -67,7 +67,11 @@ def load_documents() -> dict[tuple[str, str], str]:
         start += page
 
 
-def main(allow_missing: bool = False) -> int:
+def main(allow_missing: bool = False, questions_path: Path = QUESTIONS) -> int:
+    if not questions_path.is_file():
+        print(f"questions file not found: {questions_path}")
+        return 1
+    
     errors: list[str] = []
     warnings: list[str] = []
     questions = []
@@ -76,7 +80,7 @@ def main(allow_missing: bool = False) -> int:
         msg = f"local corpus directory not found: {CORPUS}"
         (warnings if allow_missing else errors).append(msg)
 
-    for n, line in enumerate(QUESTIONS.read_text().splitlines(), start=1):
+    for n, line in enumerate(questions_path.read_text().splitlines(), start=1):
         if not line.strip():
             continue
         try:
@@ -94,8 +98,8 @@ def main(allow_missing: bool = False) -> int:
         if set(q) != FIELDS:
             errors.append(f"{qid}: fields differ from schema (diff: {set(q) ^ FIELDS})")
             continue
-        if not re.fullmatch(r"q\d{3}", qid):
-            errors.append(f"{qid}: id must look like q001")
+        if not re.fullmatch(r"[a-z]\d{3}", qid):
+            errors.append(f"{qid}: id must look like q001 or v001")
         if qid in seen_ids:
             errors.append(f"{qid}: duplicate id")
         seen_ids.add(qid)
@@ -156,10 +160,15 @@ def main(allow_missing: bool = False) -> int:
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Validate eval/questions.jsonl")
+    parser = argparse.ArgumentParser(description="Validate an eval question file")
     parser.add_argument(
         "--allow-missing",
         action="store_true",
         help="warn instead of failing when a local corpus file is missing",
     )
-    sys.exit(main(allow_missing=parser.parse_args().allow_missing))
+    parser.add_argument(
+        "--questions", type=Path, default=QUESTIONS,
+        help="question file to validate (default eval/questions.jsonl)",
+    )
+    args = parser.parse_args()
+    sys.exit(main(allow_missing=args.allow_missing, questions_path=args.questions))
