@@ -53,3 +53,44 @@ Otherwise it is recorded as a negative result.
 - Whether 48 questions suffices to separate a 6-point gain from noise; it only exceeds the
   noise of single questions, not sampling variation between question sets.
 - Whether hit@5 tracks answer quality: no answer-quality eval exists.
+
+## Coverage plan
+
+Question universe: the 155 documents in the `documents` table (not the 214 files on disk).
+
+| Repo | Docs | Senior-only docs | Direct | Indirect | Unanswerable | Total |
+|---|---|---|---|---|---|---|
+| brain-tumor-segmentation | 96 | 2 | 9 | 4 | 2 | 15 |
+| interface-ai-computer-use-project | 32 | 4 | 9 | 3 | 2 | 14 |
+| nextplay_kanban | 17 | 3 | 7 | 3 | 1 | 11 |
+| rag-chatbot | 10 | 1 | 5 | 2 | 1 | 8 |
+| **Total** | **155** | **10** | **30** | **12** | **6** | **48** |
+
+Senior-only expected files: 12 questions, counted inside Direct/Indirect.
+Every one of the 10 senior-only files gets one question. The two largest
+senior-only files outside interface-ai (`internal/lab_notes.md`,
+`data/company_handbook.txt`, 5 chunks each) get a second.
+Per repo: brain-tumor 3, interface-ai 4, kanban 3, rag-chatbot 2.
+
+Scored sizes: contractor 30 (v1: 15), senior 42 (v1: 25).
+
+### Targeting rules
+
+1. Write each question from the source file, never from retrieval output.
+2. Prefer files that are not an `expected` file in v1.
+3. brain-tumor: at least 4 questions where near-duplicate siblings exist
+   (train/eval/submit variants). Anchor each question on something that
+   exists only in the target file, so the label is unambiguous.
+4. No 1-chunk files as direct targets (requirements.txt x2, main.tsx,
+   vite.config.ts, data_verification_report.txt, submit_ncr.sh).
+
+### Batches (one commit each)
+
+| Batch | Day | Contents |
+|---|---|---|
+| 1 | Fri 11/27 | rag-chatbot (8) + kanban (first 4) |
+| 2 | Sat 11/28 | kanban (last 7) + interface-ai (first 5) |
+| 3 | Sun 11/29 | interface-ai (last 9) + brain-tumor (first 3) |
+| 4 | Mon 11/30 | brain-tumor (last 12) |
+
+v2 baseline is measured on Tue 12/1, after all four batches, before any experiment.
